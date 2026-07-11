@@ -59,4 +59,58 @@ export const CASES = [
   { text: 'Die Farbe {blank} Blume ist rot.', answer: 'der', case: 'Genitiv', options: ['der', 'die', 'dem', 'des'], hint: 'Feminine Genitiv → der Blume.' },
   { text: 'Der Titel {blank} Buches ist lang.', answer: 'des', case: 'Genitiv', options: ['des', 'dem', 'das', 'der'], hint: 'Neuter Genitiv → des Buches.' },
   { text: 'Wegen {blank} Wetters bleiben wir zu Hause.', answer: 'des', case: 'Genitiv', options: ['des', 'dem', 'das', 'der'], hint: 'wegen + Genitiv. das Wetter → des Wetters.' },
+
+  // ---- More Nominativ ----
+  { text: '{blank} Hund schläft auf dem Sofa.', answer: 'Der', case: 'Nominativ', options: ['Der', 'Den', 'Dem', 'Des'], hint: 'Subject → Nominativ. Masculine: der.' },
+  { text: '{blank} Blume ist sehr schön.', answer: 'Die', case: 'Nominativ', options: ['Die', 'Der', 'Den', 'Dem'], hint: 'Subject → Nominativ. Feminine: die.' },
+  { text: '{blank} Fenster ist offen.', answer: 'Das', case: 'Nominativ', options: ['Das', 'Der', 'Die', 'Dem'], hint: 'Subject → Nominativ. Neuter: das.' },
+  { text: 'Dort steht {blank} Lehrer.', answer: 'der', case: 'Nominativ', options: ['der', 'den', 'dem', 'des'], hint: 'Subject → Nominativ: der Lehrer.' },
+  { text: '{blank} Sonne scheint hell.', answer: 'Die', case: 'Nominativ', options: ['Die', 'Der', 'Das', 'Den'], hint: 'Subject → Nominativ. Feminine: die.' },
+  { text: '{blank} Vögel singen am Morgen.', answer: 'Die', case: 'Nominativ', options: ['Die', 'Der', 'Den', 'Dem'], hint: 'Plural subject → Nominativ: die.' },
+
+  // ---- More Akkusativ ----
+  { text: 'Ich lese {blank} Zeitung.', answer: 'die', case: 'Akkusativ', options: ['die', 'der', 'den', 'dem'], hint: 'Direct object, feminine stays die.' },
+  { text: 'Sie trinkt {blank} Kaffee.', answer: 'den', case: 'Akkusativ', options: ['den', 'der', 'dem', 'des'], hint: 'Direct object, masculine der → den.' },
+  { text: 'Wir besuchen {blank} Museum.', answer: 'das', case: 'Akkusativ', options: ['das', 'der', 'dem', 'den'], hint: 'Neuter stays das in the Akkusativ.' },
+  { text: 'Er kauft {blank} Blumenstrauß.', answer: 'einen', case: 'Akkusativ', options: ['einen', 'ein', 'eine', 'einem'], hint: 'Masculine ein → einen in the Akkusativ.' },
+  { text: 'Ich brauche {blank} neue Jacke.', answer: 'eine', case: 'Akkusativ', options: ['eine', 'einen', 'ein', 'einer'], hint: 'Feminine eine stays eine in the Akkusativ.' },
+  { text: 'Hast du {blank} Stift?', answer: 'einen', case: 'Akkusativ', options: ['einen', 'ein', 'eine', 'einem'], hint: 'Masculine der Stift → einen Stift.' },
+  { text: 'Für {blank} Freund kaufe ich ein Buch.', answer: 'meinen', case: 'Akkusativ', options: ['meinen', 'mein', 'meinem', 'meiner'], hint: 'für + Akkusativ. mein → meinen.' },
+  { text: 'Ich sehe {blank} Kinder im Park.', answer: 'die', case: 'Akkusativ', options: ['die', 'den', 'dem', 'der'], hint: 'Plural direct object → die.' },
+
+  // ---- More Dativ ----
+  { text: 'Ich gebe {blank} Frau das Buch.', answer: 'der', case: 'Dativ', options: ['der', 'die', 'den', 'dem'], hint: 'Indirect object, feminine die → der.' },
+  { text: 'Er hilft {blank} Mann.', answer: 'dem', case: 'Dativ', options: ['dem', 'der', 'den', 'des'], hint: 'helfen + Dativ. Masculine → dem.' },
+  { text: 'Wir spielen mit {blank} Kindern.', answer: 'den', case: 'Dativ', options: ['den', 'die', 'der', 'dem'], hint: 'mit + Dativ. Plural → den (+n on noun).' },
+  { text: 'Sie fährt mit {blank} Fahrrad.', answer: 'dem', case: 'Dativ', options: ['dem', 'das', 'der', 'den'], hint: 'mit + Dativ. Neuter das → dem.' },
+  { text: 'Das Geschenk ist von {blank} Oma.', answer: 'der', case: 'Dativ', options: ['der', 'die', 'den', 'dem'], hint: 'von + Dativ. Feminine → der.' },
+  { text: 'Nach {blank} Essen gehen wir spazieren.', answer: 'dem', case: 'Dativ', options: ['dem', 'das', 'der', 'den'], hint: 'nach + Dativ. das Essen → dem Essen.' },
+  { text: 'Ich wohne bei {blank} Eltern.', answer: 'den', case: 'Dativ', options: ['den', 'die', 'der', 'dem'], hint: 'bei + Dativ. Plural → den Eltern.' },
+  { text: 'Der Ball gehört {blank} Jungen.', answer: 'dem', case: 'Dativ', options: ['dem', 'der', 'den', 'des'], hint: 'gehören + Dativ. Masculine → dem.' },
+  { text: 'Sie gibt {blank} Hund Wasser.', answer: 'dem', case: 'Dativ', options: ['dem', 'der', 'den', 'des'], hint: 'Indirect object, masculine → dem.' },
+
+  // ---- More Genitiv ----
+  { text: 'Das ist die Tasche {blank} Lehrerin.', answer: 'der', case: 'Genitiv', options: ['der', 'die', 'dem', 'des'], hint: 'Feminine Genitiv → der Lehrerin.' },
+  { text: 'Die Tür {blank} Hauses ist rot.', answer: 'des', case: 'Genitiv', options: ['des', 'dem', 'das', 'der'], hint: 'Neuter Genitiv → des Hauses.' },
+  { text: 'Trotz {blank} Regens gehen wir raus.', answer: 'des', case: 'Genitiv', options: ['des', 'dem', 'der', 'den'], hint: 'trotz + Genitiv. der Regen → des Regens.' },
+  { text: 'Das Auto {blank} Nachbarn ist neu.', answer: 'des', case: 'Genitiv', options: ['des', 'dem', 'der', 'den'], hint: 'Masculine Genitiv → des Nachbarn.' },
+  { text: 'Während {blank} Woche arbeite ich.', answer: 'der', case: 'Genitiv', options: ['der', 'die', 'dem', 'des'], hint: 'während + Genitiv. die Woche → der Woche.' },
+
+  // ---- Two-way prepositions (Wechselpräpositionen) ----
+  { text: 'Das Bild hängt an {blank} Wand.', answer: 'der', case: 'Dativ', options: ['der', 'die', 'den', 'dem'], hint: 'Position (where?) → Dativ. an der Wand.' },
+  { text: 'Ich hänge das Bild an {blank} Wand.', answer: 'die', case: 'Akkusativ', options: ['die', 'der', 'den', 'dem'], hint: 'Movement (where to?) → Akkusativ. an die Wand.' },
+  { text: 'Die Katze liegt auf {blank} Sofa.', answer: 'dem', case: 'Dativ', options: ['dem', 'das', 'der', 'den'], hint: 'Position → Dativ. auf dem Sofa.' },
+  { text: 'Die Katze springt auf {blank} Sofa.', answer: 'das', case: 'Akkusativ', options: ['das', 'dem', 'der', 'den'], hint: 'Movement → Akkusativ. auf das Sofa.' },
+  { text: 'Wir sind in {blank} Stadt.', answer: 'der', case: 'Dativ', options: ['der', 'die', 'den', 'dem'], hint: 'Position → Dativ. in der Stadt.' },
+  { text: 'Wir fahren in {blank} Stadt.', answer: 'die', case: 'Akkusativ', options: ['die', 'der', 'den', 'dem'], hint: 'Movement → Akkusativ. in die Stadt.' },
+  { text: 'Das Buch liegt unter {blank} Tisch.', answer: 'dem', case: 'Dativ', options: ['dem', 'den', 'der', 'des'], hint: 'Position → Dativ. unter dem Tisch.' },
+  { text: 'Der Hund läuft hinter {blank} Haus.', answer: 'das', case: 'Akkusativ', options: ['das', 'dem', 'der', 'den'], hint: 'Movement → Akkusativ. hinter das Haus.' },
+  { text: 'Die Lampe steht neben {blank} Bett.', answer: 'dem', case: 'Dativ', options: ['dem', 'das', 'der', 'den'], hint: 'Position → Dativ. neben dem Bett.' },
+  { text: 'Sie stellt die Lampe neben {blank} Bett.', answer: 'das', case: 'Akkusativ', options: ['das', 'dem', 'der', 'den'], hint: 'Movement → Akkusativ. neben das Bett.' },
+
+  // ---- Fixed-case prepositions ----
+  { text: 'Ich gehe mit {blank} Freundin ins Kino.', answer: 'meiner', case: 'Dativ', options: ['meiner', 'meine', 'meinen', 'meinem'], hint: 'mit + Dativ. meine → meiner (feminine).' },
+  { text: 'Das Geschenk ist für {blank} Mutter.', answer: 'meine', case: 'Akkusativ', options: ['meine', 'meiner', 'meinem', 'mein'], hint: 'für + Akkusativ. feminine → meine.' },
+  { text: 'Wir sprechen über {blank} Film.', answer: 'den', case: 'Akkusativ', options: ['den', 'dem', 'der', 'des'], hint: 'über (topic) + Akkusativ. der → den.' },
+  { text: 'Ich komme zu {blank} Party.', answer: 'der', case: 'Dativ', options: ['der', 'die', 'den', 'dem'], hint: 'zu + Dativ. die Party → der Party.' },
 ];

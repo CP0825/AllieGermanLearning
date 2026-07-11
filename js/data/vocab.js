@@ -21,6 +21,12 @@ export const VOCAB_CATEGORIES = [
   { id: 'clothing', name: 'Clothing', emoji: '👕' },
   { id: 'animals',  name: 'Animals',  emoji: '🐾' },
   { id: 'time',     name: 'Time',     emoji: '🕐' },
+  { id: 'nature',   name: 'Nature',   emoji: '🌳' },
+  { id: 'city',     name: 'City',     emoji: '🏙️' },
+  { id: 'school',   name: 'School',   emoji: '🎓' },
+  { id: 'sport',    name: 'Sport',    emoji: '⚽' },
+  { id: 'kitchen',  name: 'Kitchen',  emoji: '🍳' },
+  { id: 'health',   name: 'Health',   emoji: '🏥' },
 ];
 
 export const VOCAB = [
@@ -311,6 +317,95 @@ export const VOCAB = [
   { german: 'Wochenende',  english: 'weekend',    article: 'das', emoji: '🎉', plural: 'Wochenenden', category: 'time' },
   { german: 'Feiertag',    english: 'holiday',    article: 'der', emoji: '🎊', plural: 'Feiertage',  category: 'time' },
   { german: 'Mitternacht', english: 'midnight',   article: 'die', emoji: '🌌', plural: null,         category: 'time' },
+
+  // ---- Nature ----
+  { german: 'Baum',        english: 'tree',       article: 'der', emoji: '🌳', plural: 'Bäume',       category: 'nature' },
+  { german: 'Blume',       english: 'flower',     article: 'die', emoji: '🌸', plural: 'Blumen',      category: 'nature' },
+  { german: 'Wald',        english: 'forest',     article: 'der', emoji: '🌲', plural: 'Wälder',      category: 'nature' },
+  { german: 'Berg',        english: 'mountain',   article: 'der', emoji: '⛰️', plural: 'Berge',       category: 'nature' },
+  { german: 'Fluss',       english: 'river',      article: 'der', emoji: '🏞️', plural: 'Flüsse',      category: 'nature' },
+  { german: 'See',         english: 'lake',       article: 'der', emoji: '🏕️', plural: 'Seen',        category: 'nature' },
+  { german: 'Meer',        english: 'sea',        article: 'das', emoji: '🌊', plural: 'Meere',       category: 'nature' },
+  { german: 'Strand',      english: 'beach',      article: 'der', emoji: '🏖️', plural: 'Strände',     category: 'nature' },
+  { german: 'Insel',       english: 'island',     article: 'die', emoji: '🏝️', plural: 'Inseln',      category: 'nature' },
+  { german: 'Stern',       english: 'star',       article: 'der', emoji: '⭐', plural: 'Sterne',      category: 'nature' },
+  { german: 'Mond',        english: 'moon',       article: 'der', emoji: '🌙', plural: 'Monde',       category: 'nature' },
+  { german: 'Erde',        english: 'earth',      article: 'die', emoji: '🌍', plural: null,          category: 'nature' },
+  { german: 'Feld',        english: 'field',      article: 'das', emoji: '🌾', plural: 'Felder',      category: 'nature' },
+  { german: 'Stein',       english: 'stone',      article: 'der', emoji: '🪨', plural: 'Steine',      category: 'nature' },
+  { german: 'Gras',        english: 'grass',      article: 'das', emoji: '🌱', plural: null,          category: 'nature' },
+  { german: 'Blatt',       english: 'leaf',       article: 'das', emoji: '🍃', plural: 'Blätter',     category: 'nature' },
+
+  // ---- City ----
+  { german: 'Dorf',        english: 'village',    article: 'das', emoji: '🏘️', plural: 'Dörfer',      category: 'city' },
+  { german: 'Platz',       english: 'square',     article: 'der', emoji: '🟦', plural: 'Plätze',      category: 'city' },
+  { german: 'Brücke',      english: 'bridge',     article: 'die', emoji: '🌉', plural: 'Brücken',     category: 'city' },
+  { german: 'Kirche',      english: 'church',     article: 'die', emoji: '⛪', plural: 'Kirchen',     category: 'city' },
+  { german: 'Markt',       english: 'market',     article: 'der', emoji: '🏪', plural: 'Märkte',      category: 'city' },
+  { german: 'Geschäft',    english: 'shop',       article: 'das', emoji: '🏬', plural: 'Geschäfte',   category: 'city' },
+  { german: 'Bank',        english: 'bank',       article: 'die', emoji: '🏦', plural: 'Banken',      category: 'city' },
+  { german: 'Post',        english: 'post office',article: 'die', emoji: '📮', plural: null,          category: 'city' },
+  { german: 'Museum',      english: 'museum',     article: 'das', emoji: '🏛️', plural: 'Museen',      category: 'city' },
+  { german: 'Krankenhaus', english: 'hospital',   article: 'das', emoji: '🏥', plural: 'Krankenhäuser', category: 'city' },
+  { german: 'Park',        english: 'park',       article: 'der', emoji: '🌳', plural: 'Parks',       category: 'city' },
+  { german: 'Restaurant',  english: 'restaurant', article: 'das', emoji: '🍽️', plural: 'Restaurants', category: 'city' },
+  { german: 'Apotheke',    english: 'pharmacy',   article: 'die', emoji: '💊', plural: 'Apotheken',   category: 'city' },
+  { german: 'Rathaus',     english: 'town hall',  article: 'das', emoji: '🏛️', plural: 'Rathäuser',   category: 'city' },
+
+  // ---- School ----
+  { german: 'Schule',      english: 'school',     article: 'die', emoji: '🏫', plural: 'Schulen',     category: 'school' },
+  { german: 'Schüler',     english: 'pupil',      article: 'der', emoji: '🧑‍🎓', plural: 'Schüler',   category: 'school' },
+  { german: 'Buch',        english: 'book',       article: 'das', emoji: '📚', plural: 'Bücher',      category: 'school' },
+  { german: 'Heft',        english: 'notebook',   article: 'das', emoji: '📓', plural: 'Hefte',       category: 'school' },
+  { german: 'Stift',       english: 'pen',        article: 'der', emoji: '🖊️', plural: 'Stifte',      category: 'school' },
+  { german: 'Bleistift',   english: 'pencil',     article: 'der', emoji: '✏️', plural: 'Bleistifte',  category: 'school' },
+  { german: 'Tafel',       english: 'blackboard', article: 'die', emoji: '🪧', plural: 'Tafeln',      category: 'school' },
+  { german: 'Klasse',      english: 'class',      article: 'die', emoji: '👥', plural: 'Klassen',     category: 'school' },
+  { german: 'Prüfung',     english: 'exam',       article: 'die', emoji: '📝', plural: 'Prüfungen',   category: 'school' },
+  { german: 'Note',        english: 'grade / mark',article: 'die', emoji: '💯', plural: 'Noten',      category: 'school' },
+  { german: 'Universität', english: 'university', article: 'die', emoji: '🎓', plural: 'Universitäten', category: 'school' },
+  { german: 'Wort',        english: 'word',       article: 'das', emoji: '🔤', plural: 'Wörter',      category: 'school' },
+  { german: 'Frage',       english: 'question',   article: 'die', emoji: '❓', plural: 'Fragen',      category: 'school' },
+  { german: 'Antwort',     english: 'answer',     article: 'die', emoji: '💬', plural: 'Antworten',   category: 'school' },
+
+  // ---- Sport ----
+  { german: 'Ball',        english: 'ball',       article: 'der', emoji: '⚽', plural: 'Bälle',       category: 'sport' },
+  { german: 'Mannschaft',  english: 'team',       article: 'die', emoji: '👥', plural: 'Mannschaften', category: 'sport' },
+  { german: 'Spiel',       english: 'game',       article: 'das', emoji: '🎮', plural: 'Spiele',      category: 'sport' },
+  { german: 'Tor',         english: 'goal',       article: 'das', emoji: '🥅', plural: 'Tore',        category: 'sport' },
+  { german: 'Schwimmbad',  english: 'swimming pool',article: 'das', emoji: '🏊', plural: 'Schwimmbäder', category: 'sport' },
+  { german: 'Sieger',      english: 'winner',     article: 'der', emoji: '🏆', plural: 'Sieger',      category: 'sport' },
+  { german: 'Training',    english: 'training',   article: 'das', emoji: '🏋️', plural: null,          category: 'sport' },
+  { german: 'Läufer',      english: 'runner',     article: 'der', emoji: '🏃', plural: 'Läufer',      category: 'sport' },
+  { german: 'Sportler',    english: 'athlete',    article: 'der', emoji: '🤸', plural: 'Sportler',    category: 'sport' },
+
+  // ---- Kitchen ----
+  { german: 'Teller',      english: 'plate',      article: 'der', emoji: '🍽️', plural: 'Teller',      category: 'kitchen' },
+  { german: 'Glas',        english: 'glass',      article: 'das', emoji: '🥛', plural: 'Gläser',      category: 'kitchen' },
+  { german: 'Tasse',       english: 'cup',        article: 'die', emoji: '☕', plural: 'Tassen',      category: 'kitchen' },
+  { german: 'Gabel',       english: 'fork',       article: 'die', emoji: '🍴', plural: 'Gabeln',      category: 'kitchen' },
+  { german: 'Messer',      english: 'knife',      article: 'das', emoji: '🔪', plural: 'Messer',      category: 'kitchen' },
+  { german: 'Löffel',      english: 'spoon',      article: 'der', emoji: '🥄', plural: 'Löffel',      category: 'kitchen' },
+  { german: 'Topf',        english: 'pot',        article: 'der', emoji: '🍲', plural: 'Töpfe',       category: 'kitchen' },
+  { german: 'Pfanne',      english: 'pan',        article: 'die', emoji: '🍳', plural: 'Pfannen',     category: 'kitchen' },
+  { german: 'Flasche',     english: 'bottle',     article: 'die', emoji: '🍾', plural: 'Flaschen',    category: 'kitchen' },
+  { german: 'Ofen',        english: 'oven',       article: 'der', emoji: '🔥', plural: 'Öfen',        category: 'kitchen' },
+
+  // ---- Health ----
+  { german: 'Medizin',     english: 'medicine',   article: 'die', emoji: '💊', plural: null,          category: 'health' },
+  { german: 'Fieber',      english: 'fever',      article: 'das', emoji: '🤒', plural: null,          category: 'health' },
+  { german: 'Schmerz',     english: 'pain',       article: 'der', emoji: '😣', plural: 'Schmerzen',   category: 'health' },
+  { german: 'Husten',      english: 'cough',      article: 'der', emoji: '😷', plural: null,          category: 'health' },
+  { german: 'Erkältung',   english: 'cold (illness)', article: 'die', emoji: '🤧', plural: 'Erkältungen', category: 'health' },
+  { german: 'Krankheit',   english: 'illness',    article: 'die', emoji: '🤕', plural: 'Krankheiten', category: 'health' },
+  { german: 'Gesundheit',  english: 'health',     article: 'die', emoji: '💪', plural: null,          category: 'health' },
+
+  // ---- More food & drinks ----
+  { german: 'Salat',       english: 'salad',      article: 'der', emoji: '🥗', plural: 'Salate',      category: 'food' },
+  { german: 'Nudel',       english: 'noodle',     article: 'die', emoji: '🍜', plural: 'Nudeln',      category: 'food' },
+  { german: 'Banane',      english: 'banana',     article: 'die', emoji: '🍌', plural: 'Bananen',     category: 'food' },
+  { german: 'Orange',      english: 'orange',     article: 'die', emoji: '🍊', plural: 'Orangen',     category: 'food' },
+  { german: 'Tee',         english: 'tea',        article: 'der', emoji: '🍵', plural: 'Tees',        category: 'food' },
 ];
 
 // Convenience: only the countable nouns with a real der/die/das article.
