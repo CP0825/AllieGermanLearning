@@ -1,0 +1,118 @@
+// js/data/verbs.js
+// ---------------------------------------------------------------------------
+// A1–A2 verb pool. 40+ verbs: regular, strong/irregular, modals, separables.
+// Each: { german, english, emoji, type, present:{ich,du,er,wir,ihr,sie}, perfekt }
+//   • `er`  covers er/sie/es
+//   • `sie` covers sie (plural) / Sie (formal)
+//   • separable verbs keep the particle in the conjugated form (e.g. "stehe auf")
+//   • `perfekt` is the 3rd-person Perfekt ("hat/ist … ge…")
+// ---------------------------------------------------------------------------
+
+export const PRONOUNS = [
+  { key: 'ich', label: 'ich' },
+  { key: 'du',  label: 'du' },
+  { key: 'er',  label: 'er / sie / es' },
+  { key: 'wir', label: 'wir' },
+  { key: 'ihr', label: 'ihr' },
+  { key: 'sie', label: 'sie / Sie' },
+];
+
+export const VERBS = [
+  // ---- Regular (schwach) ----
+  { german: 'machen',  english: 'to make / do', emoji: '🛠️', type: 'regular',
+    present: { ich: 'mache', du: 'machst', er: 'macht', wir: 'machen', ihr: 'macht', sie: 'machen' }, perfekt: 'hat gemacht' },
+  { german: 'spielen', english: 'to play', emoji: '🎮', type: 'regular',
+    present: { ich: 'spiele', du: 'spielst', er: 'spielt', wir: 'spielen', ihr: 'spielt', sie: 'spielen' }, perfekt: 'hat gespielt' },
+  { german: 'lernen',  english: 'to learn', emoji: '📚', type: 'regular',
+    present: { ich: 'lerne', du: 'lernst', er: 'lernt', wir: 'lernen', ihr: 'lernt', sie: 'lernen' }, perfekt: 'hat gelernt' },
+  { german: 'wohnen',  english: 'to live / reside', emoji: '🏠', type: 'regular',
+    present: { ich: 'wohne', du: 'wohnst', er: 'wohnt', wir: 'wohnen', ihr: 'wohnt', sie: 'wohnen' }, perfekt: 'hat gewohnt' },
+  { german: 'arbeiten', english: 'to work', emoji: '💼', type: 'regular',
+    present: { ich: 'arbeite', du: 'arbeitest', er: 'arbeitet', wir: 'arbeiten', ihr: 'arbeitet', sie: 'arbeiten' }, perfekt: 'hat gearbeitet' },
+  { german: 'kaufen',  english: 'to buy', emoji: '🛒', type: 'regular',
+    present: { ich: 'kaufe', du: 'kaufst', er: 'kauft', wir: 'kaufen', ihr: 'kauft', sie: 'kaufen' }, perfekt: 'hat gekauft' },
+  { german: 'kochen',  english: 'to cook', emoji: '🍳', type: 'regular',
+    present: { ich: 'koche', du: 'kochst', er: 'kocht', wir: 'kochen', ihr: 'kocht', sie: 'kochen' }, perfekt: 'hat gekocht' },
+  { german: 'lieben',  english: 'to love', emoji: '❤️', type: 'regular',
+    present: { ich: 'liebe', du: 'liebst', er: 'liebt', wir: 'lieben', ihr: 'liebt', sie: 'lieben' }, perfekt: 'hat geliebt' },
+  { german: 'sagen',   english: 'to say', emoji: '💬', type: 'regular',
+    present: { ich: 'sage', du: 'sagst', er: 'sagt', wir: 'sagen', ihr: 'sagt', sie: 'sagen' }, perfekt: 'hat gesagt' },
+  { german: 'fragen',  english: 'to ask', emoji: '❓', type: 'regular',
+    present: { ich: 'frage', du: 'fragst', er: 'fragt', wir: 'fragen', ihr: 'fragt', sie: 'fragen' }, perfekt: 'hat gefragt' },
+  { german: 'hören',   english: 'to hear', emoji: '👂', type: 'regular',
+    present: { ich: 'höre', du: 'hörst', er: 'hört', wir: 'hören', ihr: 'hört', sie: 'hören' }, perfekt: 'hat gehört' },
+  { german: 'reden',   english: 'to talk', emoji: '🗣️', type: 'regular',
+    present: { ich: 'rede', du: 'redest', er: 'redet', wir: 'reden', ihr: 'redet', sie: 'reden' }, perfekt: 'hat geredet' },
+  { german: 'warten',  english: 'to wait', emoji: '⏳', type: 'regular',
+    present: { ich: 'warte', du: 'wartest', er: 'wartet', wir: 'warten', ihr: 'wartet', sie: 'warten' }, perfekt: 'hat gewartet' },
+  { german: 'tanzen',  english: 'to dance', emoji: '💃', type: 'regular',
+    present: { ich: 'tanze', du: 'tanzt', er: 'tanzt', wir: 'tanzen', ihr: 'tanzt', sie: 'tanzen' }, perfekt: 'hat getanzt' },
+  { german: 'brauchen', english: 'to need', emoji: '🙏', type: 'regular',
+    present: { ich: 'brauche', du: 'brauchst', er: 'braucht', wir: 'brauchen', ihr: 'braucht', sie: 'brauchen' }, perfekt: 'hat gebraucht' },
+
+  // ---- Irregular / strong ----
+  { german: 'sein',    english: 'to be', emoji: '✨', type: 'irregular',
+    present: { ich: 'bin', du: 'bist', er: 'ist', wir: 'sind', ihr: 'seid', sie: 'sind' }, perfekt: 'ist gewesen' },
+  { german: 'haben',   english: 'to have', emoji: '🤲', type: 'irregular',
+    present: { ich: 'habe', du: 'hast', er: 'hat', wir: 'haben', ihr: 'habt', sie: 'haben' }, perfekt: 'hat gehabt' },
+  { german: 'werden',  english: 'to become', emoji: '🔄', type: 'irregular',
+    present: { ich: 'werde', du: 'wirst', er: 'wird', wir: 'werden', ihr: 'werdet', sie: 'werden' }, perfekt: 'ist geworden' },
+  { german: 'gehen',   english: 'to go', emoji: '🚶', type: 'strong',
+    present: { ich: 'gehe', du: 'gehst', er: 'geht', wir: 'gehen', ihr: 'geht', sie: 'gehen' }, perfekt: 'ist gegangen' },
+  { german: 'kommen',  english: 'to come', emoji: '👋', type: 'strong',
+    present: { ich: 'komme', du: 'kommst', er: 'kommt', wir: 'kommen', ihr: 'kommt', sie: 'kommen' }, perfekt: 'ist gekommen' },
+  { german: 'fahren',  english: 'to drive / go', emoji: '🚗', type: 'strong',
+    present: { ich: 'fahre', du: 'fährst', er: 'fährt', wir: 'fahren', ihr: 'fahrt', sie: 'fahren' }, perfekt: 'ist gefahren' },
+  { german: 'essen',   english: 'to eat', emoji: '🍽️', type: 'strong',
+    present: { ich: 'esse', du: 'isst', er: 'isst', wir: 'essen', ihr: 'esst', sie: 'essen' }, perfekt: 'hat gegessen' },
+  { german: 'trinken', english: 'to drink', emoji: '🥤', type: 'strong',
+    present: { ich: 'trinke', du: 'trinkst', er: 'trinkt', wir: 'trinken', ihr: 'trinkt', sie: 'trinken' }, perfekt: 'hat getrunken' },
+  { german: 'sehen',   english: 'to see', emoji: '👀', type: 'strong',
+    present: { ich: 'sehe', du: 'siehst', er: 'sieht', wir: 'sehen', ihr: 'seht', sie: 'sehen' }, perfekt: 'hat gesehen' },
+  { german: 'lesen',   english: 'to read', emoji: '📖', type: 'strong',
+    present: { ich: 'lese', du: 'liest', er: 'liest', wir: 'lesen', ihr: 'lest', sie: 'lesen' }, perfekt: 'hat gelesen' },
+  { german: 'sprechen', english: 'to speak', emoji: '🗨️', type: 'strong',
+    present: { ich: 'spreche', du: 'sprichst', er: 'spricht', wir: 'sprechen', ihr: 'sprecht', sie: 'sprechen' }, perfekt: 'hat gesprochen' },
+  { german: 'nehmen',  english: 'to take', emoji: '🤏', type: 'strong',
+    present: { ich: 'nehme', du: 'nimmst', er: 'nimmt', wir: 'nehmen', ihr: 'nehmt', sie: 'nehmen' }, perfekt: 'hat genommen' },
+  { german: 'geben',   english: 'to give', emoji: '🎁', type: 'strong',
+    present: { ich: 'gebe', du: 'gibst', er: 'gibt', wir: 'geben', ihr: 'gebt', sie: 'geben' }, perfekt: 'hat gegeben' },
+  { german: 'finden',  english: 'to find', emoji: '🔍', type: 'strong',
+    present: { ich: 'finde', du: 'findest', er: 'findet', wir: 'finden', ihr: 'findet', sie: 'finden' }, perfekt: 'hat gefunden' },
+  { german: 'schlafen', english: 'to sleep', emoji: '😴', type: 'strong',
+    present: { ich: 'schlafe', du: 'schläfst', er: 'schläft', wir: 'schlafen', ihr: 'schlaft', sie: 'schlafen' }, perfekt: 'hat geschlafen' },
+  { german: 'laufen',  english: 'to run / walk', emoji: '🏃', type: 'strong',
+    present: { ich: 'laufe', du: 'läufst', er: 'läuft', wir: 'laufen', ihr: 'lauft', sie: 'laufen' }, perfekt: 'ist gelaufen' },
+  { german: 'treffen', english: 'to meet', emoji: '🤝', type: 'strong',
+    present: { ich: 'treffe', du: 'triffst', er: 'trifft', wir: 'treffen', ihr: 'trefft', sie: 'treffen' }, perfekt: 'hat getroffen' },
+  { german: 'helfen',  english: 'to help', emoji: '🆘', type: 'strong',
+    present: { ich: 'helfe', du: 'hilfst', er: 'hilft', wir: 'helfen', ihr: 'helft', sie: 'helfen' }, perfekt: 'hat geholfen' },
+  { german: 'wissen',  english: 'to know', emoji: '🧠', type: 'irregular',
+    present: { ich: 'weiß', du: 'weißt', er: 'weiß', wir: 'wissen', ihr: 'wisst', sie: 'wissen' }, perfekt: 'hat gewusst' },
+  { german: 'schreiben', english: 'to write', emoji: '✍️', type: 'strong',
+    present: { ich: 'schreibe', du: 'schreibst', er: 'schreibt', wir: 'schreiben', ihr: 'schreibt', sie: 'schreiben' }, perfekt: 'hat geschrieben' },
+
+  // ---- Modals ----
+  { german: 'können',  english: 'can / to be able', emoji: '💪', type: 'modal',
+    present: { ich: 'kann', du: 'kannst', er: 'kann', wir: 'können', ihr: 'könnt', sie: 'können' }, perfekt: 'hat gekonnt' },
+  { german: 'müssen',  english: 'must / to have to', emoji: '❗', type: 'modal',
+    present: { ich: 'muss', du: 'musst', er: 'muss', wir: 'müssen', ihr: 'müsst', sie: 'müssen' }, perfekt: 'hat gemusst' },
+  { german: 'wollen',  english: 'to want', emoji: '🎯', type: 'modal',
+    present: { ich: 'will', du: 'willst', er: 'will', wir: 'wollen', ihr: 'wollt', sie: 'wollen' }, perfekt: 'hat gewollt' },
+  { german: 'dürfen',  english: 'may / to be allowed', emoji: '🪪', type: 'modal',
+    present: { ich: 'darf', du: 'darfst', er: 'darf', wir: 'dürfen', ihr: 'dürft', sie: 'dürfen' }, perfekt: 'hat gedurft' },
+  { german: 'sollen',  english: 'should / to be supposed to', emoji: '📋', type: 'modal',
+    present: { ich: 'soll', du: 'sollst', er: 'soll', wir: 'sollen', ihr: 'sollt', sie: 'sollen' }, perfekt: 'hat gesollt' },
+  { german: 'mögen',   english: 'to like', emoji: '💗', type: 'modal',
+    present: { ich: 'mag', du: 'magst', er: 'mag', wir: 'mögen', ihr: 'mögt', sie: 'mögen' }, perfekt: 'hat gemocht' },
+
+  // ---- Separable ----
+  { german: 'aufstehen', english: 'to get up', emoji: '⏰', type: 'separable',
+    present: { ich: 'stehe auf', du: 'stehst auf', er: 'steht auf', wir: 'stehen auf', ihr: 'steht auf', sie: 'stehen auf' }, perfekt: 'ist aufgestanden' },
+  { german: 'einkaufen', english: 'to go shopping', emoji: '🛍️', type: 'separable',
+    present: { ich: 'kaufe ein', du: 'kaufst ein', er: 'kauft ein', wir: 'kaufen ein', ihr: 'kauft ein', sie: 'kaufen ein' }, perfekt: 'hat eingekauft' },
+  { german: 'anrufen',   english: 'to call (phone)', emoji: '📞', type: 'separable',
+    present: { ich: 'rufe an', du: 'rufst an', er: 'ruft an', wir: 'rufen an', ihr: 'ruft an', sie: 'rufen an' }, perfekt: 'hat angerufen' },
+  { german: 'fernsehen', english: 'to watch TV', emoji: '📺', type: 'separable',
+    present: { ich: 'sehe fern', du: 'siehst fern', er: 'sieht fern', wir: 'sehen fern', ihr: 'seht fern', sie: 'sehen fern' }, perfekt: 'hat ferngesehen' },
+];

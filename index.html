@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#E24A7A" />
+  <title>Deutsch für Allie 💕</title>
+
+  <!-- Fonts: Newsreader (headings), Hanken Grotesk (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/styles.css" />
+
+  <!-- Supabase JS v2 (UMD build attaches to window.supabase). Loaded as a
+       classic script in <head> so window.supabase exists before the ES
+       modules below run. -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <!-- Shown only until you paste real keys into config.js -->
+  <div id="config-banner" class="config-banner" hidden>
+    ⚙️ Add your Supabase URL + anon key in <code>config.js</code> to enable sync.
+    Running in <strong>local-only mode</strong> for now.
+  </div>
+
+  <!-- Subtle sync status ("saved locally / syncing / synced") -->
+  <div id="sync-indicator" class="sync-indicator" role="status" aria-live="polite" hidden></div>
+
+  <header class="app-header">
+    <a class="brand" href="#dashboard">
+      <span class="brand-flag">🇩🇪</span> Deutsch für Allie
+    </a>
+    <nav id="top-nav" class="top-nav" aria-label="Primary"></nav>
+  </header>
+
+  <main id="app-root" class="app-root" role="main"><!-- views render here --></main>
+
+  <nav id="bottom-nav" class="bottom-nav" aria-label="Primary"></nav>
+
+  <!-- App bootstrap -->
+  <script type="module">
+    import { ensureProfile, flushQueue, IS_CONFIGURED, onSync, getSyncStatus } from './js/db.js';
+    import { initNav } from './js/nav.js';
+    import { initRouter } from './js/router.js';
+    import { initAudio } from './js/audio.js';
+    import { initCelebrations } from './js/celebrate.js';
+
+    if (!IS_CONFIGURED) {
+      document.getElementById('config-banner').hidden = false;
+    }
+
+    // Subtle sync indicator: offline / saving / synced.
+    const syncEl = document.getElementById('sync-indicator');
+    let prevPending = 0;
+    let hideTimer = null;
+    function renderSync(s) {
+      if (!s.configured) { syncEl.hidden = true; return; } // local-only: nothing to sync
+      clearTimeout(hideTimer);
+      if (!s.online) {
+        syncEl.hidden = false;
+        syncEl.className = 'sync-indicator offline';
+        syncEl.textContent = '⚠ Offline — saved locally';
+      } else if (s.pending > 0) {
+        syncEl.hidden = false;
+        syncEl.className = 'sync-indicator syncing';
+        syncEl.textContent = '↻ Saving…';
+      } else if (prevPending > 0) {
+        syncEl.hidden = false;
+        syncEl.className = 'sync-indicator ok';
+        syncEl.textContent = '✓ Synced';
+        hideTimer = setTimeout(() => { syncEl.hidden = true; }, 1500);
+      } else {
+        syncEl.hidden = true;
+      }
+      prevPending = s.pending;
+    }
+    onSync((e) => renderSync(e.detail));
+
+    initNav();
+    initCelebrations();
+    await ensureProfile();   // creates the singleton profile row on first run
+    initAudio();             // sets up TTS + speaker buttons
+    flushQueue();            // drain any writes queued while offline
+    renderSync(getSyncStatus());
+    initRouter();
+  </script>
+</body>
+</html>
