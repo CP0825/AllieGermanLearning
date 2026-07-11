@@ -88,6 +88,16 @@ export function fuzzyEqual(input, answer) {
   return levenshtein(A, B) <= tol;
 }
 
+// Flash an element green (correct) or red (wrong) as instant answer feedback.
+// Re-triggers cleanly if called again before the animation finishes.
+export function flashResult(el, isCorrect) {
+  if (!el) return;
+  const cls = isCorrect ? 'ex-flash-good' : 'ex-flash-bad';
+  el.classList.remove('ex-flash-good', 'ex-flash-bad');
+  void el.offsetWidth; // restart the CSS animation
+  el.classList.add(cls);
+}
+
 // ---- Session bar -----------------------------------------------------------
 // A fixed bar pinned above the mobile bottom-nav that shows how many items the
 // learner has done in THIS practice session and an explicit Exit. It lives on
@@ -284,6 +294,7 @@ export function runner(container, spec) {
     bar.inc();
     recordAttempt(spec.section, isCorrect, xpPerRound, round.label || round.reveal);
     renderFeedback(isCorrect, round);
+    flashResult(body, isCorrect); // green pulse / red shake before advancing
     // Auto-advance on a correct answer; wait for the learner on a wrong one.
     if (isCorrect) advanceTimer = setTimeout(next, 1300);
   }
@@ -309,6 +320,7 @@ export function runner(container, spec) {
   }
 
   function loadRound() {
+    body.classList.remove('ex-flash-good', 'ex-flash-bad');
     const round = spec.nextRound();
     body.innerHTML = renderRound(round);
     if (round.type === 'choice') wireChoice(round);

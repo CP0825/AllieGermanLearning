@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 
 import { SENTENCES } from './data/sentences.js';
-import { createRotator, shuffle, escapeHtml, recordAttempt, sessionBar } from './engine.js';
+import { createRotator, shuffle, escapeHtml, recordAttempt, sessionBar, flashResult } from './engine.js';
 
 const XP = 12;
 
@@ -53,6 +53,7 @@ export function renderWordOrder(container) {
   function load() {
     answered = false;
     clearTimeout(advanceTimer);
+    body.classList.remove('ex-flash-good', 'ex-flash-bad');
     current = rot.pick(POOL, (p) => p.id);
     answer = [];
     const chips = current.tokens.map((t, i) => ({ id: i, t }));
@@ -138,6 +139,7 @@ export function renderWordOrder(container) {
     }
     updateScore();
     bar.inc();
+    flashResult(body, isCorrect);
     recordAttempt('word-order', isCorrect, XP);
 
     // Colour the placed chips.
