@@ -968,6 +968,12 @@ body.has-session-bar {
 }
 .cs-sentence,
 .wc-sentence,
+.fb-cue {
+  text-align: center;
+  color: var(--muted);
+  font-size: 1rem;
+  margin-bottom: var(--sp-2);
+}
 .fb-sentence {
   text-align: center;
   font-size: 1.2rem;

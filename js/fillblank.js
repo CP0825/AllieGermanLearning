@@ -29,13 +29,14 @@ export function renderFillBlank(container) {
       const full = s.text.replace('{blank}', s.answer);
       return {
         type: 'input',
-        prompt: `<div class="fb-sentence">${renderBlank(s.text)}</div>`,
+        prompt: `
+          <div class="fb-cue">${escapeHtml(s.translation)}</div>
+          <div class="fb-sentence">${renderBlank(s.text)}</div>`,
         answer: s.answer,
         accept: (val) => fuzzyEqual(val, s.answer),
         reveal: s.answer,
         speak: full, // read the completed sentence after answering
         label: s.answer,
-        translation: s.translation,
       };
     },
   });
