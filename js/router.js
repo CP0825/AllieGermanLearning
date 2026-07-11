@@ -42,12 +42,21 @@ SECTIONS.forEach((s) => {
 });
 
 let cleanup = null;
+// Monotonic render token. Views render asynchronously (they await the DB), so a
+// fast tap can start a new render before the previous one finishes. We stamp
+// each render and, once a view resolves, ignore it if a newer render has since
+// started — otherwise a stale view would clobber the screen and, worse, leak its
+// db:change listener (the classic "Settings shows Home" / "buttons do nothing" /
+// "kicked back to the dashboard after one answer" bugs).
+let renderId = 0;
 
 function root() {
   return document.getElementById('app-root');
 }
 
 async function renderRoute() {
+  const myId = ++renderId;
+
   // Tear down the previous view first.
   if (cleanup) {
     try {
@@ -68,6 +77,16 @@ async function renderRoute() {
     result = await view(el);
   } else {
     result = renderPlaceholder(el, META[hash] || { label: 'Coming soon', emoji: '✨' });
+  }
+
+  // A newer navigation superseded us while we were awaiting. Immediately run
+  // this view's cleanup (so its listeners don't leak) and bail — the newer
+  // render owns the screen.
+  if (myId !== renderId) {
+    if (typeof result === 'function') {
+      try { result(); } catch { /* ignore */ }
+    }
+    return;
   }
 
   cleanup = typeof result === 'function' ? result : null;

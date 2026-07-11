@@ -12,7 +12,7 @@ import {
   getCards, addCard, updateCard, deleteCard, getDueCards,
   getCategories, addCategory, today,
 } from './db.js';
-import { escapeHtml, recordAttempt } from './engine.js';
+import { escapeHtml, recordAttempt, sessionBar } from './engine.js';
 import { speakerButton } from './audio.js';
 import { STARTER_CARDS } from './data/starterCards.js';
 import { VOCAB_CATEGORIES } from './data/vocab.js';
@@ -135,6 +135,7 @@ export async function renderFlashcards(container) {
   const content = container.querySelector('#fc-content');
   const scoreEl = container.querySelector('#fc-score');
   const session = { reviewed: 0 };
+  const bar = sessionBar({ emoji: '🃏', title: 'Flashcards', unit: 'reviewed' });
 
   container.querySelectorAll('.fc-tab').forEach((t) =>
     t.addEventListener('click', () => setMode(t.dataset.mode))
@@ -261,6 +262,7 @@ export async function renderFlashcards(container) {
     recordAttempt('flashcards', quality >= 3, XP_BY_Q[quality] ?? 6, card.german);
     session.reviewed += 1;
     scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
+    bar.inc();
 
     queue.shift();
     if (quality < 3) queue.push({ ...card, ...patch }); // relearn this session
@@ -385,6 +387,6 @@ export async function renderFlashcards(container) {
   // Start in review mode.
   setMode('review');
 
-  // No persistent listeners to tear down.
-  return () => {};
+  // Remove the session bar when leaving flashcards.
+  return () => { bar.remove(); };
 }

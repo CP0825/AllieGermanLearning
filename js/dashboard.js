@@ -35,6 +35,9 @@ export async function renderDashboard(el) {
       getDailyStats(),
       getActivityLog(200),
     ]);
+    // Guard against a late/background refresh landing after we've navigated
+    // away — never let the dashboard repaint over another view.
+    if ((location.hash || '#dashboard') !== '#dashboard') return;
     el.innerHTML = template({ profile, cards, allDaily, todayStats, activity });
   };
 
