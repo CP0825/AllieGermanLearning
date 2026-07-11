@@ -11,6 +11,7 @@
 // Practice sections. `built: false` sections render a "coming soon" placeholder
 // until their learning content is added in a later prompt.
 export const SECTIONS = [
+  { hash: '#conversation', label: 'Conversation',   emoji: '💬', desc: 'Everyday phrases by situation', built: true },
   { hash: '#flashcards',  label: 'Flashcards',     emoji: '🃏', desc: 'Review your vocabulary',   built: false },
   { hash: '#der-die-das', label: 'der / die / das', emoji: '🇩🇪', desc: 'Master the articles',      built: false },
   { hash: '#fill-blank',  label: 'Fill the blank',  emoji: '✍️', desc: 'Complete the sentence',    built: false },

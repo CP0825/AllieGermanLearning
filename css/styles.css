@@ -1011,6 +1011,18 @@ body.has-session-bar {
   font-size: 1.2rem;
   line-height: 1.6;
 }
+.cv-situation {
+  display: inline-block;
+  margin: 0 auto var(--sp-2);
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--accent-soft, rgba(99, 102, 241, 0.12));
+  color: var(--accent, #6366f1);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.view .cv-situation { display: block; width: fit-content; }
 
 /* ===========================================================================
    WORD ORDER

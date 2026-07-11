@@ -18,6 +18,7 @@ import { renderWordOrder } from './wordorder.js';
 import { renderConjugate } from './conjugate.js';
 import { renderWordChoice } from './wordchoice.js';
 import { renderCases } from './cases.js';
+import { renderConversation } from './conversation.js';
 
 // hash → render function. Each may return a cleanup function.
 const ROUTES = {
@@ -30,6 +31,7 @@ const ROUTES = {
   '#conjugate': renderConjugate,
   '#word-choice': renderWordChoice,
   '#cases': renderCases,
+  '#conversation': renderConversation,
 };
 
 // hash → { label, emoji } lookup for the fallback placeholder.
