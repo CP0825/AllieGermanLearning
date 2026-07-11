@@ -1082,38 +1082,6 @@ body.has-session-bar {
   margin-bottom: var(--sp-3);
 }
 
-/* Review stage: card + a tap-to-advance zone beside it. */
-.fc-stage {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-  cursor: pointer; /* tapping beside the card advances */
-}
-.fc-stage .flashcard {
-  flex: 1 1 auto;
-  min-width: 0;
-}
-.fc-next-zone {
-  flex: 0 0 clamp(44px, 12vw, 64px);
-  border: none;
-  border-radius: var(--radius);
-  background: var(--surface-2);
-  color: var(--muted);
-  font-size: 2rem;
-  line-height: 1;
-  cursor: pointer;
-  display: grid;
-  place-items: center;
-  transition: background 0.15s ease, transform 0.1s ease;
-}
-.fc-next-zone:hover {
-  background: var(--rose-soft);
-  color: var(--primary);
-}
-.fc-next-zone:active {
-  transform: scale(0.96);
-}
-
 /* Flip card */
 .flashcard {
   perspective: 1200px;
@@ -1195,11 +1163,16 @@ body.has-session-bar {
 }
 
 /* Rating buttons */
+.fc-rate-cue {
+  text-align: center;
+  font-size: 0.85rem;
+  margin: var(--sp-4) 0 var(--sp-2);
+}
 .fc-rating {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-2);
-  margin-top: var(--sp-4);
+  margin-top: var(--sp-2);
 }
 .fc-rate {
   flex-direction: column;

@@ -1,11 +1,11 @@
 // js/flashcards.js  (#flashcards)
 // ---------------------------------------------------------------------------
 // Translation flashcards (English → German) + full card management.
-//   • Review: a slideshow over the shuffled deck. English shows on the front
-//     and the card auto-advances after 1.5s. Tap the card to flip to the German
-//     word (cancels the auto-advance so you can study it); tap beside the card
-//     (or the › zone / "Next card") to move on. Each card seen counts as a
-//     review — logged with a light SM-2 "Good" so due dates still progress.
+//   • Review: step through the shuffled deck at your own pace. English shows on
+//     the front; tap the card to flip to the German word. Then self-rate with
+//     three buttons (Again / Good / Easy) — that logs the review (SM-2 updates
+//     the due date) and moves to the next card. A "Previous card" button steps
+//     back. Nothing auto-advances.
 //     (Article / der-die-das drilling lives in the dedicated #der-die-das view.)
 //   • Manage: add / edit / delete cards (german, english, article, emoji,
 //     category, example) with an emoji category picker.
@@ -21,10 +21,14 @@ import { speakerButton } from './audio.js';
 import { STARTER_CARDS } from './data/starterCards.js';
 import { VOCAB_CATEGORIES } from './data/vocab.js';
 
-// Translation review: English prompt → German answer. XP per card reviewed.
-const XP_PER_CARD = 6;
-// How long a card lingers before auto-advancing to the next (ms).
-const AUTO_ADVANCE_MS = 1500;
+// Translation review: English prompt → German answer, then self-rate how well
+// it was known. Three buttons → SM-2 quality; XP awarded when known (q ≥ 3).
+const RATINGS = [
+  { q: 1, label: 'Again',  sub: "didn't know", cls: 'r-again' },
+  { q: 4, label: 'Good',   sub: 'knew it',     cls: 'r-good' },
+  { q: 5, label: 'Easy',   sub: 'too easy',    cls: 'r-easy' },
+];
+const XP_BY_Q = { 1: 0, 4: 8, 5: 10 };
 
 // slug (from vocab / starter data) → display category name.
 const SLUG_TO_NAME = Object.fromEntries(VOCAB_CATEGORIES.map((c) => [c.id, c.name]));
@@ -137,7 +141,6 @@ export async function renderFlashcards(container) {
   function setMode(m) {
     mode = m;
     editingId = null;
-    clearTimeout(autoTimer); // never let a pending flip-timer bleed across modes
     container.querySelectorAll('.fc-tab').forEach((t) =>
       t.classList.toggle('active', t.dataset.mode === m)
     );
@@ -145,16 +148,13 @@ export async function renderFlashcards(container) {
     else showManage();
   }
 
-  // ---- Review (English → German translation slideshow) ----
-  // Front = English prompt. The card auto-advances after AUTO_ADVANCE_MS.
-  //   • Tap NEXT TO the card (or the › zone / Skip) → jump to the next card now.
-  //   • Tap ON the card → flip to reveal the German word; this cancels the
-  //     auto-advance so the learner can study it as long as they like.
+  // ---- Review (English → German, self-paced with self-rating) ----
+  // Front = English prompt. Tap the card to flip to the German answer, then rate
+  // Again / Good / Easy to log the review and move on. "Previous card" steps
+  // back. Nothing auto-advances.
   let queue = [];
   let idx = 0;
   let flipped = false;
-  let autoTimer = null;
-  let recorded = false; // count each card as reviewed at most once
 
   async function showReview() {
     scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
@@ -182,7 +182,6 @@ export async function renderFlashcards(container) {
   }
 
   function renderDeckDone() {
-    clearTimeout(autoTimer);
     content.innerHTML = `
       <div class="card fc-done">
         <div class="fc-done-emoji">🎉</div>
@@ -198,41 +197,42 @@ export async function renderFlashcards(container) {
   }
 
   function renderCard() {
-    clearTimeout(autoTimer);
     flipped = false;
-    recorded = false;
     const card = queue[idx];
     const isNoun = !!card.article;
     const artCls = isNoun ? 'opt-' + card.article : '';
     const germanFull = (isNoun ? card.article + ' ' : '') + card.german;
     content.innerHTML = `
       <div class="fc-progress">${idx + 1} / ${queue.length} · ${session.reviewed} done</div>
-      <div class="fc-stage" id="fc-stage">
-        <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Tap to reveal the German word">
-          <div class="fc-inner">
-            <div class="fc-face fc-front">
-              <div class="fc-emoji">${card.emoji || '🃏'}</div>
-              <div class="fc-word">${escapeHtml(card.english)}</div>
-              <div class="fc-tap">tap card = German · tap side = next</div>
-            </div>
-            <div class="fc-face fc-back">
-              <div class="fc-answer ${artCls}">${escapeHtml(germanFull)} ${speakerButton(germanFull)}</div>
-              ${card.example ? `<div class="fc-example">„${escapeHtml(card.example)}“ ${speakerButton(card.example)}</div>` : ''}
-            </div>
+      <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Tap to reveal the German word">
+        <div class="fc-inner">
+          <div class="fc-face fc-front">
+            <div class="fc-emoji">${card.emoji || '🃏'}</div>
+            <div class="fc-word">${escapeHtml(card.english)}</div>
+            <div class="fc-tap">tap to see the German word</div>
+          </div>
+          <div class="fc-face fc-back">
+            <div class="fc-answer ${artCls}">${escapeHtml(germanFull)} ${speakerButton(germanFull)}</div>
+            ${card.example ? `<div class="fc-example">„${escapeHtml(card.example)}“ ${speakerButton(card.example)}</div>` : ''}
           </div>
         </div>
-        <button class="fc-next-zone" id="fc-next" type="button" aria-label="Next card">›</button>
+      </div>
+      <p class="fc-rate-cue muted">How well did you know it?</p>
+      <div class="fc-rating" id="fc-rating">
+        ${RATINGS.map((r) => `
+          <button class="btn fc-rate ${r.cls}" data-q="${r.q}" type="button">
+            <span class="rate-label">${r.label}</span>
+            <span class="rate-iv">${r.sub}</span>
+          </button>`).join('')}
       </div>
       <div class="btn-row" style="justify-content:center">
-        <button class="btn" id="fc-skip" type="button">Next card →</button>
+        <button class="btn" id="fc-prev" type="button" ${idx === 0 ? 'disabled' : ''}>← Previous card</button>
       </div>`;
 
-    const stage = content.querySelector('#fc-stage');
     const flashcard = content.querySelector('#flashcard');
 
-    // Tap the card → flip and stop the auto-advance so it can be studied.
+    // Tap the card → flip between English and German.
     flashcard.addEventListener('click', (e) => {
-      e.stopPropagation();
       if (e.target.closest('.speak')) return; // tapping 🔊 shouldn't flip
       toggleFlip();
     });
@@ -240,43 +240,36 @@ export async function renderFlashcards(container) {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleFlip(); }
     });
 
-    // Tap anywhere beside the card (the stage) → advance.
-    stage.addEventListener('click', (e) => {
-      if (e.target.closest('#flashcard')) return;
-      advance();
-    });
-    content.querySelector('#fc-next').addEventListener('click', (e) => { e.stopPropagation(); advance(); });
-    content.querySelector('#fc-skip').addEventListener('click', advance);
-
-    // Auto-advance unless the learner taps the card.
-    autoTimer = setTimeout(advance, AUTO_ADVANCE_MS);
+    content.querySelectorAll('.fc-rate').forEach((b) =>
+      b.addEventListener('click', () => rate(Number(b.dataset.q)))
+    );
+    content.querySelector('#fc-prev').addEventListener('click', goPrev);
   }
 
   function toggleFlip() {
-    clearTimeout(autoTimer); // studying → cancel the auto-advance for this card
     const flashcard = content.querySelector('#flashcard');
     flipped = !flipped;
     flashcard.classList.toggle('flipped', flipped);
   }
 
-  // Log the current card as reviewed (once) and nudge its SM-2 due date forward.
-  function recordCurrent() {
-    if (recorded) return;
-    recorded = true;
+  // A rating logs the review, updates the SM-2 due date, and advances.
+  function rate(quality) {
     const card = queue[idx];
-    updateCard(card.id, schedule(card, 4)); // treat a review as "Good"
-    recordAttempt('flashcards', true, XP_PER_CARD, card.german);
+    updateCard(card.id, schedule(card, quality));
+    recordAttempt('flashcards', quality >= 3, XP_BY_Q[quality] ?? 6, card.german);
     session.reviewed += 1;
     scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
     bar.inc();
-  }
-
-  function advance() {
-    clearTimeout(autoTimer);
-    recordCurrent();
     idx += 1;
     if (idx >= queue.length) renderDeckDone();
     else renderCard();
+  }
+
+  // Step back to the previous card (without un-counting anything already rated).
+  function goPrev() {
+    if (idx === 0) return;
+    idx -= 1;
+    renderCard();
   }
 
   // ---- Manage ----
@@ -474,6 +467,6 @@ house, Haus, das, 🏠</pre>
   // Start in review mode.
   setMode('review');
 
-  // Stop any pending auto-advance and remove the session bar on leave.
-  return () => { clearTimeout(autoTimer); bar.remove(); };
+  // Remove the session bar on leave.
+  return () => { bar.remove(); };
 }
