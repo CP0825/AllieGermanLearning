@@ -145,7 +145,24 @@ export async function renderFlashcards(container) {
 
   const content = container.querySelector('#fc-content');
   const scoreEl = container.querySelector('#fc-score');
-  const session = { reviewed: 0 };
+  const session = { reviewed: 0 }; // cards seen in the current pass (deck-done copy)
+
+  // "N reviewed" pill = cards reviewed TODAY. Persisted so it survives reloads /
+  // navigation and only resets when the device date rolls past midnight.
+  const DAY_KEY = 'ag:fcReviewed';
+  function dayReviewed() {
+    try {
+      const r = JSON.parse(localStorage.getItem(DAY_KEY) || 'null');
+      if (r && r.day === today()) return r.count || 0;
+    } catch { /* ignore */ }
+    return 0;
+  }
+  function bumpDayReviewed() {
+    const n = dayReviewed() + 1; // dayReviewed()==0 after midnight → resets
+    try { localStorage.setItem(DAY_KEY, JSON.stringify({ day: today(), count: n })); } catch { /* ignore */ }
+    return n;
+  }
+  const showReviewedPill = () => { scoreEl.textContent = `⭐ ${dayReviewed()} reviewed`; };
 
   container.querySelectorAll('.fc-tab').forEach((t) =>
     t.addEventListener('click', () => setMode(t.dataset.mode))
@@ -214,7 +231,7 @@ export async function renderFlashcards(container) {
       session.reviewed = 0;
       persistSession();
     }
-    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
+    showReviewedPill();
     renderCard();
   }
 
@@ -227,7 +244,7 @@ export async function renderFlashcards(container) {
     idx = 0;
     session.reviewed = 0;
     persistSession();
-    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
+    showReviewedPill();
     renderCard();
   }
 
@@ -266,7 +283,6 @@ export async function renderFlashcards(container) {
     const artCls = isNoun ? 'opt-' + card.article : '';
     const germanFull = (isNoun ? card.article + ' ' : '') + card.german;
     content.innerHTML = `
-      <div class="fc-progress">${idx + 1} / ${queue.length} · ${session.reviewed} done</div>
       <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Tap to reveal the German word">
         <div class="fc-inner">
           <div class="fc-face fc-front">
@@ -324,7 +340,7 @@ export async function renderFlashcards(container) {
     card.last_quality = quality; // keep the in-memory queue copy in sync
     recordAttempt('flashcards', quality >= 3, XP_BY_Q[quality] ?? 6, card.german);
     session.reviewed += 1;
-    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
+    scoreEl.textContent = `⭐ ${bumpDayReviewed()} reviewed`;
     // "Again" = didn't know it → re-queue the card a few positions ahead so it
     // actually comes back around within this same session, not just next time.
     if (quality < 3) {

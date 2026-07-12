@@ -254,9 +254,8 @@ export function runner(container, spec) {
     updateScore();
     recordAttempt(spec.section, isCorrect, xpPerRound, round.label || round.reveal);
     renderFeedback(isCorrect, round);
-    flashResult(body, isCorrect); // green pulse / red shake before advancing
-    // Auto-advance on a correct answer; wait for the learner on a wrong one.
-    if (isCorrect) advanceTimer = setTimeout(next, 1300);
+    flashResult(body, isCorrect); // green pulse / red shake
+    // Never auto-advance — the learner reads the feedback and clicks "Weiter →".
   }
 
   function renderFeedback(isCorrect, round) {
@@ -276,7 +275,7 @@ export function runner(container, spec) {
     fb.hidden = false;
     const nextBtn = fb.querySelector('.ex-next');
     nextBtn.addEventListener('click', next);
-    if (!isCorrect) nextBtn.focus();
+    nextBtn.focus(); // so Enter advances, on right AND wrong answers
   }
 
   function loadRound() {

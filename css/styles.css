@@ -1134,13 +1134,6 @@ body.has-session-bar {
   box-shadow: var(--shadow-sm);
 }
 
-.fc-progress {
-  text-align: right;
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-bottom: var(--sp-3);
-}
-
 /* Flip card */
 .flashcard {
   perspective: 1200px;

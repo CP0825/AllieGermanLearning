@@ -155,9 +155,9 @@ export function renderWordOrder(container) {
       <div class="fb-translation">${escapeHtml(current.translation)}</div>
       <button class="btn btn-primary ex-next" type="button">Weiter →</button>`;
     fb.hidden = false;
-    fb.querySelector('.ex-next').addEventListener('click', load);
-    if (isCorrect) advanceTimer = setTimeout(load, 1300);
-    else fb.querySelector('.ex-next').focus();
+    const nb = fb.querySelector('.ex-next');
+    nb.addEventListener('click', load);
+    nb.focus(); // wait for the click/Enter — no auto-advance
   }
 
   function onKey(e) {

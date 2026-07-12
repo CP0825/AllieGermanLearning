@@ -298,6 +298,11 @@ async function refreshCards() {
   try {
     const { data } = await sb.from('cards').select('*').order('created_at');
     if (data) {
+      // If we still have un-pushed card writes queued, DON'T let the server copy
+      // overwrite them — that would revert an optimistic edit (e.g. a fresh
+      // rating) back to the stale row and make the UI "snap back". Keep local
+      // until the queue drains and server + cache agree.
+      if (queueHas('cards')) return cacheGet('cards') || data;
       setIfChanged('cards', data);
       return data;
     }
@@ -305,6 +310,11 @@ async function refreshCards() {
     console.warn('[db] refreshCards failed:', e.message);
   }
   return cacheGet('cards') || [];
+}
+
+// True if the offline write queue still holds an op targeting `table`.
+function queueHas(table) {
+  return (cacheGet('queue') || []).some((op) => op.table === table);
 }
 
 export async function addCard(card) {
