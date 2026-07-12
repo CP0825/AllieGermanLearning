@@ -74,8 +74,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  /* Leave room for the fixed bottom nav on mobile. */
-  padding-bottom: calc(var(--bottom-nav-h) + env(safe-area-inset-bottom, 0px));
+  /* Nav bars were removed — just clear the mobile safe-area inset. */
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 h1,
 h2,
@@ -408,6 +408,15 @@ code {
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--sp-2);
+  /* Clear space before the next section (Recent activity) so they don't crowd. */
+  margin-bottom: var(--sp-4);
+}
+
+/* Settings entry at the foot of the home screen (replaces the nav bar). */
+.home-settings {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--sp-2);
 }
 .tile {
   position: relative;
@@ -1126,7 +1135,7 @@ body.has-session-bar {
 }
 
 .fc-progress {
-  text-align: center;
+  text-align: right;
   color: var(--muted);
   font-size: 0.85rem;
   margin-bottom: var(--sp-3);
@@ -1241,6 +1250,9 @@ body.has-session-bar {
 .fc-rate.r-good  { border-color: var(--success); color: #1f7a55; }
 .fc-rate.r-easy  { border-color: #3E78C9; color: #2c5fa6; }
 .fc-rate:hover { transform: translateY(-2px); }
+
+/* Breathing room between the rating buttons and the "Previous card" button. */
+.fc-prev-row { margin-top: var(--sp-4); }
 
 /* Bulk add */
 .cm-note {
@@ -1534,7 +1546,6 @@ body.has-session-bar {
 .feed-empty { text-align: center; padding: var(--sp-2) 0; }
 
 @media (min-width: 768px) {
-  .stat-grid { grid-template-columns: repeat(4, 1fr); }
   .hm-cell { width: 15px; height: 15px; }
 }
 
@@ -1580,7 +1591,7 @@ body.has-session-bar {
 .sync-indicator {
   position: fixed;
   right: 12px;
-  bottom: calc(var(--bottom-nav-h) + 12px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
   z-index: 40;
   font-size: 0.78rem;
   font-weight: 600;

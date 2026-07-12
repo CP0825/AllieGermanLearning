@@ -9,7 +9,7 @@
 // ---------------------------------------------------------------------------
 
 import { SENTENCES } from './data/sentences.js';
-import { createRotator, shuffle, escapeHtml, recordAttempt, sessionBar, flashResult } from './engine.js';
+import { createRotator, shuffle, escapeHtml, recordAttempt, flashResult } from './engine.js';
 
 const XP = 12;
 
@@ -44,7 +44,6 @@ export function renderWordOrder(container) {
 
   const body = container.querySelector('#ex-body');
   const scoreEl = container.querySelector('#ex-score');
-  const bar = sessionBar({ emoji: '🔀', title: 'Word order', unit: 'done' });
 
   function updateScore() {
     scoreEl.textContent = `⭐ ${session.xp} · ${session.correct}/${session.attempts}`;
@@ -138,7 +137,6 @@ export function renderWordOrder(container) {
       session.correct += 1;
     }
     updateScore();
-    bar.inc();
     flashResult(body, isCorrect);
     recordAttempt('word-order', isCorrect, XP);
 
@@ -180,6 +178,5 @@ export function renderWordOrder(container) {
   return () => {
     clearTimeout(advanceTimer);
     document.removeEventListener('keydown', onKey);
-    bar.remove();
   };
 }

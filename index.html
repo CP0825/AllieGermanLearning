@@ -34,17 +34,13 @@
     <a class="brand" href="#dashboard">
       <span class="brand-flag">🇩🇪</span> Deutsch für Allie
     </a>
-    <nav id="top-nav" class="top-nav" aria-label="Primary"></nav>
   </header>
 
   <main id="app-root" class="app-root" role="main"><!-- views render here --></main>
 
-  <nav id="bottom-nav" class="bottom-nav" aria-label="Primary"></nav>
-
   <!-- App bootstrap -->
   <script type="module">
     import { ensureProfile, flushQueue, IS_CONFIGURED, onSync, getSyncStatus } from './js/db.js';
-    import { initNav } from './js/nav.js';
     import { initRouter } from './js/router.js';
     import { initAudio } from './js/audio.js';
     import { initCelebrations } from './js/celebrate.js';
@@ -80,7 +76,6 @@
     }
     onSync((e) => renderSync(e.detail));
 
-    initNav();
     initCelebrations();
     await ensureProfile();   // creates the singleton profile row on first run
     initAudio();             // sets up TTS + speaker buttons

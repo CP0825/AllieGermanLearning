@@ -34,8 +34,10 @@ export async function renderSettings(el) {
 function template(profile, categories) {
   return `
     <section class="view settings">
-      <header class="hero small">
-        <h1 class="hero-title">Settings <span>⚙️</span></h1>
+      <header class="ex-head">
+        <a class="ex-back" href="#dashboard" title="Back to home">←</a>
+        <h1 class="ex-title">⚙️ Settings</h1>
+        <span class="score-pill">⚙️</span>
       </header>
 
       <div class="card">

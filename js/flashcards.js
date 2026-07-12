@@ -17,7 +17,7 @@ import {
   getCards, addCard, updateCard, deleteCard,
   getCategories, addCategory, today,
 } from './db.js';
-import { escapeHtml, recordAttempt, sessionBar, shuffle } from './engine.js';
+import { escapeHtml, recordAttempt, shuffle } from './engine.js';
 import { speakerButton } from './audio.js';
 import { STARTER_CARDS } from './data/starterCards.js';
 import { VOCAB_CATEGORIES } from './data/vocab.js';
@@ -146,7 +146,6 @@ export async function renderFlashcards(container) {
   const content = container.querySelector('#fc-content');
   const scoreEl = container.querySelector('#fc-score');
   const session = { reviewed: 0 };
-  const bar = sessionBar({ emoji: '🃏', title: 'Flashcards', unit: 'reviewed' });
 
   container.querySelectorAll('.fc-tab').forEach((t) =>
     t.addEventListener('click', () => setMode(t.dataset.mode))
@@ -239,7 +238,7 @@ export async function renderFlashcards(container) {
             <span class="rate-iv">${r.sub}</span>
           </button>`).join('')}
       </div>
-      <div class="btn-row" style="justify-content:center">
+      <div class="btn-row fc-prev-row" style="justify-content:center">
         <button class="btn" id="fc-prev" type="button" ${idx === 0 ? 'disabled' : ''}>← Previous card</button>
       </div>`;
 
@@ -267,13 +266,21 @@ export async function renderFlashcards(container) {
   }
 
   // A rating logs the review, updates the SM-2 due date, and advances.
+  // The rating is saved to the card immediately (interval/due_date), so progress
+  // toward "mastered" persists even though the on-screen position resets to 1/N
+  // the next time you open Review (the queue is reshuffled each session).
   function rate(quality) {
     const card = queue[idx];
     updateCard(card.id, schedule(card, quality));
     recordAttempt('flashcards', quality >= 3, XP_BY_Q[quality] ?? 6, card.german);
     session.reviewed += 1;
     scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
-    bar.inc();
+    // "Again" = didn't know it → re-queue the card a few positions ahead so it
+    // actually comes back around within this same session, not just next time.
+    if (quality < 3) {
+      const insertAt = Math.min(idx + 6, queue.length);
+      queue.splice(insertAt, 0, card);
+    }
     idx += 1;
     if (idx >= queue.length) renderDeckDone();
     else renderCard();
@@ -480,7 +487,4 @@ house, Haus, das, 🏠</pre>
 
   // Start in review mode.
   setMode('review');
-
-  // Remove the session bar on leave.
-  return () => { bar.remove(); };
 }

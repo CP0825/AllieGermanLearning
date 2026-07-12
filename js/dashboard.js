@@ -79,11 +79,9 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
   // Level + XP
   const lvl = levelProgress(profile.xp || 0);
 
-  // Cards
+  // Cards — a word counts as "mastered" once its SM-2 interval reaches 21 days
+  // (i.e. it survived enough successful reviews to be scheduled 3+ weeks out).
   const mastered = cards.filter((c) => (c.interval || 0) >= 21).length;
-  const total = cards.length;
-  const t = dayStr(new Date());
-  const due = cards.filter((c) => !c.due_date || c.due_date <= t).length;
 
   // Weekly exercises
   const week = new Set(lastNDays(7));
@@ -146,9 +144,7 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
       <!-- Stat tiles -->
       <div class="stat-grid">
         ${statTile('🏆', mastered, 'words mastered', 'gold')}
-        ${statTile('🃏', total, 'total cards')}
         ${statTile('⚡', weekEx, 'this week')}
-        ${statTile('📅', due, 'cards due')}
       </div>
 
       <!-- Accuracy per section -->
@@ -165,12 +161,17 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
 
       <!-- Practice tiles -->
       <h2 class="section-label">Practice</h2>
-      <div class="tile-grid">${tiles(due)}</div>
+      <div class="tile-grid">${tiles()}</div>
 
       <!-- Recent activity -->
       <div class="card">
         <h2 class="section-label" style="margin-top:0">Recent activity</h2>
         ${feed(activity)}
+      </div>
+
+      <!-- Settings entry (nav bar removed — this is how you reach Settings) -->
+      <div class="home-settings">
+        <a class="btn" href="#settings">⚙️ Settings</a>
       </div>
     </section>`;
 }
@@ -245,7 +246,7 @@ function heatmap(allDaily) {
     </div>`;
 }
 
-function tiles(due) {
+function tiles() {
   return SECTIONS.map(
     (s) => `
     <a class="tile" href="${s.hash}">
@@ -254,7 +255,6 @@ function tiles(due) {
         <div class="tile-title">${s.label}</div>
         <div class="tile-desc">${s.desc}</div>
       </div>
-      ${s.hash === '#flashcards' && due ? `<span class="pill pill-due">${due}</span>` : ''}
     </a>`
   ).join('');
 }

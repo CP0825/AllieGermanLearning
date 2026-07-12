@@ -1,11 +1,12 @@
 // js/nav.js
 // ---------------------------------------------------------------------------
-// Navigation + the shared list of learning sections.
+// The shared list of learning sections.
 //
-//   • SECTIONS   → every practice area (used by the dashboard tiles + router
-//                  placeholders). Keeping it here avoids an import cycle.
-//   • NAV_ITEMS  → the small, thumb-friendly set shown in the top tab bar
-//                  (desktop) and the fixed bottom nav (mobile).
+//   • SECTIONS → every practice area (used by the dashboard tiles + router
+//                placeholders). Keeping it here avoids an import cycle.
+//
+// The old top/bottom nav bars were removed — you now reach Settings from the
+// button at the foot of the home screen and return via the ← on each view.
 // ---------------------------------------------------------------------------
 
 // Practice sections. `built: false` sections render a "coming soon" placeholder
@@ -21,34 +22,9 @@ export const SECTIONS = [
   { hash: '#cases',       label: 'Cases',           emoji: '📦', desc: 'Nom · Akk · Dat · Gen',    built: false },
 ];
 
-// Primary nav (kept short for mobile thumbs).
-export const NAV_ITEMS = [
-  { hash: '#dashboard',   label: 'Home',        emoji: '🏠' },
-  { hash: '#flashcards',  label: 'Cards',       emoji: '🃏' },
-  { hash: '#der-die-das', label: 'der/die/das', emoji: '🇩🇪' },
-  { hash: '#settings',    label: 'Settings',    emoji: '⚙️' },
-];
-
-function itemsHtml() {
-  return NAV_ITEMS.map(
-    (i) => `
-    <a class="nav-item" href="${i.hash}" data-hash="${i.hash}">
-      <span class="nav-emoji">${i.emoji}</span>
-      <span class="nav-label">${i.label}</span>
-    </a>`
-  ).join('');
-}
-
-// Render both nav bars from the same source so their active states stay in sync.
-export function initNav() {
-  const html = itemsHtml();
-  const top = document.getElementById('top-nav');
-  const bottom = document.getElementById('bottom-nav');
-  if (top) top.innerHTML = html;
-  if (bottom) bottom.innerHTML = html;
-}
-
-// Highlight the nav item matching the current route.
+// Highlight the nav item matching the current route. The nav bars are gone, so
+// this is a harmless no-op today, but the router still calls it — kept so a
+// future nav can re-enable highlighting without touching the router.
 export function setActiveNav(hash) {
   document.querySelectorAll('.nav-item').forEach((a) => {
     a.classList.toggle('active', a.dataset.hash === hash);

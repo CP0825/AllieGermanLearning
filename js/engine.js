@@ -98,44 +98,6 @@ export function flashResult(el, isCorrect) {
   el.classList.add(cls);
 }
 
-// ---- Session bar -----------------------------------------------------------
-// A fixed bar pinned above the mobile bottom-nav that shows how many items the
-// learner has done in THIS practice session and an explicit Exit. It lives on
-// <body> (outside the routed view) so it survives per-round re-renders; every
-// exercise removes it in its router cleanup. Creating a new bar first clears any
-// stale one, so a leaked bar can never stack.
-export function sessionBar({ emoji = '✨', title = '', unit = 'done' } = {}) {
-  document.getElementById('session-bar')?.remove();
-  const bar = document.createElement('div');
-  bar.id = 'session-bar';
-  bar.className = 'session-bar';
-  bar.innerHTML = `
-    <div class="sb-info">
-      <span class="sb-emoji">${emoji}</span>
-      <span class="sb-title">${escapeHtml(title)}</span>
-    </div>
-    <div class="sb-count"><span class="sb-num">0</span> <span class="sb-unit">${escapeHtml(unit)}</span></div>
-    <a class="sb-exit" href="#dashboard" aria-label="Exit practice">Exit ✕</a>`;
-  document.body.appendChild(bar);
-  document.body.classList.add('has-session-bar');
-  const numEl = bar.querySelector('.sb-num');
-  let n = 0;
-  const paint = () => {
-    numEl.textContent = String(n);
-    numEl.classList.remove('bump');
-    void numEl.offsetWidth; // restart the little bump animation
-    numEl.classList.add('bump');
-  };
-  return {
-    set(v) { n = v; paint(); },
-    inc() { n += 1; paint(); },
-    remove() {
-      bar.remove();
-      document.body.classList.remove('has-session-bar');
-    },
-  };
-}
-
 // ---- Least-recently-seen rotator ------------------------------------------
 // Keeps a per-section window of recently used item ids in localStorage. When
 // every id is in the window we pick the oldest still-in-pool id, guaranteeing a
@@ -270,7 +232,6 @@ export function runner(container, spec) {
 
   const body = container.querySelector('#ex-body');
   const scoreEl = container.querySelector('#ex-score');
-  const bar = sessionBar({ emoji: spec.emoji, title: spec.title, unit: 'done' });
 
   function updateScore() {
     scoreEl.textContent = `⭐ ${session.xp} · ${session.correct}/${session.attempts}`;
@@ -291,7 +252,6 @@ export function runner(container, spec) {
       session.correct += 1;
     }
     updateScore();
-    bar.inc();
     recordAttempt(spec.section, isCorrect, xpPerRound, round.label || round.reveal);
     renderFeedback(isCorrect, round);
     flashResult(body, isCorrect); // green pulse / red shake before advancing
@@ -409,6 +369,5 @@ export function runner(container, spec) {
   return () => {
     clearTimeout(advanceTimer);
     document.removeEventListener('keydown', onKey);
-    bar.remove();
   };
 }
