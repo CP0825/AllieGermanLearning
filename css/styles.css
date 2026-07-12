@@ -830,6 +830,16 @@ body.has-session-bar {
 .pl-cue b { font-family: var(--font-head); }
 .pl-q { text-align: center; color: var(--muted); margin-top: 4px; }
 
+/* ---- Translate (English → German) prompt --------------------------------- */
+.tr-en {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.25;
+}
+.tr-cue { text-align: center; margin-top: 6px; font-size: 0.85rem; }
+
 /* ---- Grammar reference page (#grammar) ----------------------------------- */
 .gr-toc {
   display: flex;

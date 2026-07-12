@@ -19,6 +19,7 @@ export const SECTIONS = [
   { hash: '#conjugate',   label: 'Conjugate',       emoji: '🔤', desc: 'Present-tense verbs',      built: true },
   { hash: '#past-tense',  label: 'Past tense',      emoji: '⏪', desc: 'The Perfekt',              built: true },
   { hash: '#fill-blank',  label: 'Fill the blank',  emoji: '✍️', desc: 'Complete the sentence',    built: true },
+  { hash: '#translate',   label: 'Translate',       emoji: '📝', desc: 'English → German sentence', built: true },
   { hash: '#word-order',  label: 'Word order',      emoji: '🔀', desc: 'Arrange the words',        built: true },
   { hash: '#word-choice', label: 'Word choice',     emoji: '🎨', desc: 'Pick the right word',      built: true },
   { hash: '#conversation', label: 'Conversation',   emoji: '💬', desc: 'Everyday phrases',         built: true },

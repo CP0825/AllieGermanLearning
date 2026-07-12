@@ -90,6 +90,23 @@ export const EXPLAIN = {
       </ul>`,
   },
 
+  translate: {
+    title: 'Translating sentences',
+    emoji: '📝',
+    html: `
+      <p>This is <b>production</b> practice — you build the whole German sentence yourself, which
+      is the fastest way to turn what you recognise into what you can actually say.</p>
+      <ul>
+        <li>Remember the <b>V2 rule</b> — the verb is the second idea (see Word order).</li>
+        <li>Watch the <b>case</b> of the object (a direct object is Akkusativ) and <b>capitalise
+          nouns</b>.</li>
+        <li>Spelling is forgiving on case, punctuation and ä/ö/ü/ß (you can type <i>ae/oe/ue/ss</i>),
+          but the <b>words and grammar</b> need to be right.</li>
+        <li>There's often more than one correct answer — if yours is marked wrong, compare it with
+          the model answer shown; it may just be a different valid phrasing.</li>
+      </ul>`,
+  },
+
   'fill-blank': {
     title: 'Filling the blank',
     emoji: '✍️',

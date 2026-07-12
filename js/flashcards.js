@@ -14,14 +14,14 @@
 // ---------------------------------------------------------------------------
 
 import {
-  getCards, addCard, updateCard, deleteCard,
+  getCards, addCard, addCards, updateCard, deleteCard,
   getCategories, addCategory, today,
 } from './db.js';
 import { escapeHtml, recordAttempt, shuffle } from './engine.js';
 import { speakerButton } from './audio.js';
 import { explainPanel } from './data/explanations.js';
 import { STARTER_CARDS } from './data/starterCards.js';
-import { VOCAB_CATEGORIES } from './data/vocab.js';
+import { VOCAB, VOCAB_CATEGORIES } from './data/vocab.js';
 
 // Translation review: English prompt → German answer, then self-rate how well
 // it was known. Three buttons → SM-2 quality; XP awarded when known (q ≥ 3).
@@ -71,16 +71,30 @@ export function schedule(card, quality) {
   };
 }
 
-// Bump this whenever STARTER_CARDS grows so existing users get the new cards.
-// (The old all-or-nothing `ag:seeded` flag froze early users at their first
-//  seed — deploying more starter cards never reached them. This version key +
-//  additive backfill fixes that: on each version bump we add any starter card
-//  the deck is missing, matched by german word so nothing is duplicated.)
-const SEED_VERSION = '2';
+// Bump this whenever the seed word list grows so existing decks top up.
+// (v3: the deck now draws from the FULL vocab pool — the curated STARTER_CARDS
+//  first, then every word in VOCAB — so all ~719 words go into spaced
+//  repetition, not just the 151 starters. Additive + deduped by german word.)
+const SEED_VERSION = '3';
 
-// Seed / top-up the starter deck (+ base categories). Runs the first time and
-// again after any SEED_VERSION bump, adding only starter cards not already
-// present (dedup by lower-cased german word).
+// The full seed word list: curated starter cards (they carry example sentences)
+// first, then the rest of the vocab pool, deduped by lower-cased german word.
+function seedWords() {
+  const seen = new Set();
+  const out = [];
+  const push = (w) => {
+    const key = (w.german || '').trim().toLowerCase();
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    out.push(w);
+  };
+  STARTER_CARDS.forEach(push);
+  VOCAB.forEach(push);
+  return out;
+}
+
+// Seed / top-up the deck (+ base categories). Runs the first time and again
+// after any SEED_VERSION bump, adding only words not already present.
 async function maybeSeed() {
   if (localStorage.getItem('ag:seedVersion') === SEED_VERSION) return;
 
@@ -90,19 +104,22 @@ async function maybeSeed() {
   const existing = await getCards();
   const have = new Set(existing.map((c) => (c.german || '').trim().toLowerCase()));
 
-  for (const sc of STARTER_CARDS) {
-    if (have.has(sc.german.trim().toLowerCase())) continue;
-    const catName = SLUG_TO_NAME[sc.category];
-    await addCard({
-      german: sc.german,
-      english: sc.english,
-      article: sc.article,
-      emoji: sc.emoji,
-      example: sc.example,
+  const toAdd = [];
+  for (const w of seedWords()) {
+    const key = w.german.trim().toLowerCase();
+    if (have.has(key)) continue;
+    have.add(key);
+    const catName = SLUG_TO_NAME[w.category];
+    toAdd.push({
+      german: w.german,
+      english: w.english,
+      article: w.article ?? null,
+      emoji: w.emoji ?? null,
+      example: w.example ?? null, // VOCAB entries have no example; that's fine
       category_id: catName ? byName[catName] || null : null,
     });
-    have.add(sc.german.trim().toLowerCase());
   }
+  if (toAdd.length) await addCards(toAdd); // one bulk insert for the whole batch
 
   localStorage.setItem('ag:seedVersion', SEED_VERSION);
   localStorage.setItem('ag:seeded', '1'); // keep legacy flag set for older code paths

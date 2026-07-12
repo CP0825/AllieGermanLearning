@@ -354,6 +354,34 @@ export async function addCard(card) {
   return row;
 }
 
+// Bulk insert (used by the flashcard seed). One cache write + one Supabase
+// insert for the whole batch, instead of N round-trips.
+export async function addCards(cards) {
+  if (!cards || !cards.length) return [];
+  const rows = cards.map((card) => ({
+    id: uuid(),
+    category_id: card.category_id || null,
+    german: card.german,
+    english: card.english,
+    article: card.article || null,
+    emoji: card.emoji || null,
+    example: card.example || null,
+    ease_factor: 2.5,
+    interval: 0,
+    repetitions: 0,
+    due_date: today(),
+    last_reviewed: null,
+    last_quality: null,
+    created_at: nowISO(),
+  }));
+  const list = cacheGet('cards') || [];
+  list.push(...rows);
+  cacheSet('cards', list);
+  emit('cards');
+  push({ type: 'insert', table: 'cards', payload: rows });
+  return rows;
+}
+
 export async function updateCard(id, patch) {
   const list = cacheGet('cards') || [];
   const idx = list.findIndex((c) => c.id === id);

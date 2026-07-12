@@ -21,6 +21,7 @@ import { renderCases } from './cases.js';
 import { renderConversation } from './conversation.js';
 import { renderPlurals } from './plurals.js';
 import { renderPastTense } from './pasttense.js';
+import { renderTranslate } from './translate.js';
 import { renderGrammar } from './grammar.js';
 
 // hash → render function. Each may return a cleanup function.
@@ -37,6 +38,7 @@ const ROUTES = {
   '#conversation': renderConversation,
   '#plurals': renderPlurals,
   '#past-tense': renderPastTense,
+  '#translate': renderTranslate,
   '#grammar': renderGrammar,
 };
 
