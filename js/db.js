@@ -95,9 +95,15 @@ function uuid() {
 function emitSync() {
   window.dispatchEvent(new CustomEvent('db:sync', { detail: getSyncStatus() }));
 }
+let lastPushError = null; // human-readable text of the most recent failed write
 export function getSyncStatus() {
   const q = cacheGet('queue') || [];
-  return { configured: IS_CONFIGURED, online: navigator.onLine, pending: q.length };
+  return {
+    configured: IS_CONFIGURED,
+    online: navigator.onLine,
+    pending: q.length,
+    error: q.length ? lastPushError : null,
+  };
 }
 export function onSync(handler) {
   window.addEventListener('db:sync', handler);
@@ -137,9 +143,11 @@ async function push(op) {
   try {
     const { error } = await execOp(op);
     if (error) throw error;
+    lastPushError = null;
     flushQueue(); // opportunistically drain anything queued earlier
   } catch (e) {
     console.warn('[db] push failed, queued for retry:', e.message);
+    lastPushError = e.message;
     enqueue(op);
   }
 }
@@ -154,10 +162,12 @@ export async function flushQueue() {
     try {
       const { error } = await execOp(op);
       if (error) throw error;
-    } catch {
+    } catch (e) {
+      lastPushError = e.message;
       remaining.push(op); // keep for the next attempt
     }
   }
+  if (!remaining.length) lastPushError = null;
   cacheSet('queue', remaining);
   emitSync();
 }
@@ -205,6 +215,8 @@ async function refreshProfile() {
       data = created.data;
     }
     if (data) {
+      // Keep un-pushed local edits (XP/streak) from being reverted by a refresh.
+      if (queueHas('profile')) return cacheGet('profile') || data;
       setIfChanged('profile', data);
       return data;
     }
@@ -451,6 +463,7 @@ async function refreshDaily(day) {
   const key = 'daily:' + day;
   const fallback = { day, exercises: 0, correct: 0, xp: 0 };
   if (!IS_CONFIGURED) return cacheGet(key) || fallback;
+  if (queueHas('daily_stats')) return cacheGet(key) || fallback; // keep local bump
   try {
     const { data } = await sb.from('daily_stats').select('*').eq('day', day).maybeSingle();
     const row = data || fallback;
@@ -475,6 +488,7 @@ export async function getAllDailyStats() {
 
 async function refreshAllDaily() {
   if (!IS_CONFIGURED) return;
+  if (queueHas('daily_stats')) return; // don't revert un-pushed local stat bumps
   try {
     const { data } = await sb.from('daily_stats').select('*');
     if (data) {

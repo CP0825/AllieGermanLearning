@@ -15,6 +15,11 @@
 
   <link rel="stylesheet" href="css/styles.css" />
 
+  <!-- PWA: installable to the home screen + offline after first visit -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+
   <!-- Supabase JS v2 (UMD build attaches to window.supabase). Loaded as a
        classic script in <head> so window.supabase exists before the ES
        modules below run. -->
@@ -62,8 +67,17 @@
         syncEl.textContent = '⚠ Offline — saved locally';
       } else if (s.pending > 0) {
         syncEl.hidden = false;
-        syncEl.className = 'sync-indicator syncing';
-        syncEl.textContent = '↻ Saving…';
+        if (s.error) {
+          // A write keeps failing (e.g. a missing column) — say so instead of
+          // spinning "Saving…" forever. Full error on hover.
+          syncEl.className = 'sync-indicator error';
+          syncEl.textContent = '⚠ Sync problem — retrying';
+          syncEl.title = s.error;
+        } else {
+          syncEl.className = 'sync-indicator syncing';
+          syncEl.textContent = '↻ Saving…';
+          syncEl.title = '';
+        }
       } else if (prevPending > 0) {
         syncEl.hidden = false;
         syncEl.className = 'sync-indicator ok';
@@ -82,6 +96,16 @@
     flushQueue();            // drain any writes queued while offline
     renderSync(getSyncStatus());
     initRouter();
+  </script>
+
+  <!-- Register the service worker (installable / offline). Classic script so it
+       runs regardless of the module above; failures are non-fatal. -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(() => { /* offline features off */ });
+      });
+    }
   </script>
 </body>
 </html>

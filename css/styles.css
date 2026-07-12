@@ -766,6 +766,111 @@ body.has-session-bar {
   font-size: 0.95rem;
 }
 
+/* ---- Collapsible "How it works" explanation (exercises) ------------------ */
+.ex-explain {
+  background: var(--surface);
+  border: 1px solid var(--rose-soft);
+  border-radius: var(--radius-sm);
+  margin: 0 0 var(--sp-3);
+  overflow: hidden;
+}
+.ex-explain > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 11px 14px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ex-explain > summary::-webkit-details-marker { display: none; }
+.ex-explain > summary::after {
+  content: '▾';
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  color: var(--muted);
+}
+.ex-explain[open] > summary::after { transform: rotate(180deg); }
+.ex-explain-ico { font-size: 1.05rem; }
+.ex-explain-body {
+  padding: 0 16px 14px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+.ex-explain-body p { margin: 0.5em 0; }
+.ex-explain-body ul { margin: 0.4em 0; padding-left: 1.2em; }
+.ex-explain-body li { margin: 0.3em 0; }
+.ex-explain-body b { color: var(--ink); }
+
+/* Small grammar tables used inside explanations + the Grammar page */
+.gr-table {
+  border-collapse: collapse;
+  margin: 0.6em 0;
+  font-size: 0.9rem;
+}
+.gr-table th,
+.gr-table td {
+  border: 1px solid var(--rose-soft);
+  padding: 5px 10px;
+  text-align: center;
+}
+.gr-table th { background: var(--surface-2); font-weight: 700; }
+
+/* ---- Prompt cue for the Plurals / Past-tense drills ---------------------- */
+.pl-cue { font-size: 1.35rem; text-align: center; }
+.pl-cue b { font-family: var(--font-head); }
+.pl-q { text-align: center; color: var(--muted); margin-top: 4px; }
+
+/* ---- Grammar reference page (#grammar) ----------------------------------- */
+.gr-toc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: var(--sp-4);
+}
+.gr-chip {
+  border: 1px solid var(--rose-soft);
+  background: var(--surface);
+  border-radius: var(--radius-pill);
+  padding: 7px 13px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+}
+.gr-chip:hover { background: var(--surface-2); }
+.gr-card { padding: 0; overflow: hidden; }
+.gr-card > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: var(--sp-3) var(--sp-4);
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.gr-card > summary::-webkit-details-marker { display: none; }
+.gr-card > summary::after {
+  content: '▾';
+  margin-left: auto;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+.gr-card[open] > summary::after { transform: rotate(180deg); }
+.gr-emoji { font-size: 1.3rem; }
+.gr-body {
+  padding: 0 var(--sp-4) var(--sp-4);
+  line-height: 1.6;
+}
+.gr-body p { margin: 0.6em 0; }
+.gr-body ul { margin: 0.5em 0; padding-left: 1.3em; }
+.gr-body li { margin: 0.35em 0; }
+
 .ex-card {
   min-height: 260px;
   display: flex;
@@ -1641,6 +1746,7 @@ body.has-session-bar {
 .sync-indicator.offline { background: #fff4d6; color: #8a6300; }
 .sync-indicator.syncing { background: var(--surface-2); color: var(--muted); }
 .sync-indicator.ok { background: rgba(59, 167, 118, 0.15); color: #1f7a55; }
+.sync-indicator.error { background: #fde2e4; color: #b3363b; cursor: help; }
 @media (min-width: 768px) {
   .sync-indicator { bottom: 16px; }
 }

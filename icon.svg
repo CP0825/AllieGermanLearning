@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="112" fill="#E24A7A"/>
+  <text x="256" y="288" font-family="Georgia, 'Times New Roman', serif" font-size="220"
+        font-weight="700" fill="#FFFFFF" text-anchor="middle">DE</text>
+  <path fill="#FFFFFF" transform="translate(256 380) scale(2.1)"
+        d="M0 22 C-14 8 -26 0 -26 -11 C-26 -20 -19 -26 -11 -26 C-5 -26 -1 -22 0 -19 C1 -22 5 -26 11 -26 C19 -26 26 -20 26 -11 C26 0 14 8 0 22 Z"/>
+</svg>

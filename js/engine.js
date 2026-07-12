@@ -19,6 +19,7 @@
 import { logActivity, bumpDailyStats, awardXp, recomputeStreak, progressSnapshot } from './db.js';
 import { levelFromXp } from './levels.js';
 import { speakerButton } from './audio.js';
+import { explainPanel } from './data/explanations.js';
 
 // ---- Generic helpers -------------------------------------------------------
 
@@ -227,11 +228,18 @@ export function runner(container, spec) {
         <span class="score-pill" id="ex-score">⭐ 0</span>
       </header>
       <p class="ex-instruction">${escapeHtml(spec.instruction || '')}</p>
+      ${explainPanel(spec.section)}
       <div class="card ex-card" id="ex-body"></div>
     </section>`;
 
   const body = container.querySelector('#ex-body');
   const scoreEl = container.querySelector('#ex-score');
+
+  // Adaptive practice: items answered wrong are remembered and re-served a few
+  // rounds later (and again if still missed), so mistakes actually get retrained
+  // instead of vanishing into the random rotation.
+  const retry = [];
+  let sinceRetry = 0;
 
   function updateScore() {
     scoreEl.textContent = `⭐ ${session.xp} · ${session.correct}/${session.attempts}`;
@@ -250,6 +258,12 @@ export function runner(container, spec) {
     if (isCorrect) {
       session.xp += xpPerRound;
       session.correct += 1;
+    } else {
+      // Queue the missed item to come back (cap the backlog; avoid duplicates).
+      const key = round.reveal || round.label;
+      if (retry.length < 12 && !retry.some((r) => (r.reveal || r.label) === key)) {
+        retry.push(round);
+      }
     }
     updateScore();
     recordAttempt(spec.section, isCorrect, xpPerRound, round.label || round.reveal);
@@ -280,7 +294,15 @@ export function runner(container, spec) {
 
   function loadRound() {
     body.classList.remove('ex-flash-good', 'ex-flash-bad');
-    const round = spec.nextRound();
+    // Resurface a previously-missed item roughly every third round.
+    let round;
+    if (retry.length && sinceRetry >= 2) {
+      round = retry.shift();
+      sinceRetry = 0;
+    } else {
+      round = spec.nextRound();
+      sinceRetry += 1;
+    }
     body.innerHTML = renderRound(round);
     if (round.type === 'choice') wireChoice(round);
     else wireInput(round);

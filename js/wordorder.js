@@ -10,6 +10,7 @@
 
 import { SENTENCES } from './data/sentences.js';
 import { createRotator, shuffle, escapeHtml, recordAttempt, flashResult } from './engine.js';
+import { explainPanel } from './data/explanations.js';
 
 const XP = 12;
 
@@ -39,6 +40,7 @@ export function renderWordOrder(container) {
         <span class="score-pill" id="ex-score">⭐ 0</span>
       </header>
       <p class="ex-instruction">Tap the words to build the correct German sentence.</p>
+      ${explainPanel('word-order')}
       <div class="card ex-card" id="ex-body"></div>
     </section>`;
 

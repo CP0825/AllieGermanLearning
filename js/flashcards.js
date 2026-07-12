@@ -19,6 +19,7 @@ import {
 } from './db.js';
 import { escapeHtml, recordAttempt, shuffle } from './engine.js';
 import { speakerButton } from './audio.js';
+import { explainPanel } from './data/explanations.js';
 import { STARTER_CARDS } from './data/starterCards.js';
 import { VOCAB_CATEGORIES } from './data/vocab.js';
 
@@ -140,10 +141,12 @@ export async function renderFlashcards(container) {
         <button class="fc-tab" data-mode="review">Review</button>
         <button class="fc-tab" data-mode="manage">Manage cards</button>
       </div>
+      <div id="fc-explain"></div>
       <div id="fc-content"></div>
     </section>`;
 
   const content = container.querySelector('#fc-content');
+  const explainEl = container.querySelector('#fc-explain');
   const scoreEl = container.querySelector('#fc-score');
   const session = { reviewed: 0 }; // cards seen in the current pass (deck-done copy)
 
@@ -174,6 +177,8 @@ export async function renderFlashcards(container) {
     container.querySelectorAll('.fc-tab').forEach((t) =>
       t.classList.toggle('active', t.dataset.mode === m)
     );
+    // The grammar/"how review works" panel belongs to the Review tab only.
+    explainEl.innerHTML = m === 'review' ? explainPanel('flashcards') : '';
     if (m === 'review') showReview();
     else showManage();
   }
@@ -219,6 +224,23 @@ export async function renderFlashcards(container) {
     return true;
   }
 
+  // Spaced-repetition order: the cards that are DUE today (most overdue first),
+  // then a handful of brand-new cards to introduce. This is what turns the SM-2
+  // scheduling that every rating writes into an actual study plan, instead of a
+  // random shuffle of the whole deck.
+  const NEW_PER_SESSION = 20;
+  function buildQueue(all) {
+    const t = today();
+    const due = all.filter((c) => c.last_reviewed && c.due_date && c.due_date <= t);
+    const fresh = all.filter((c) => !c.last_reviewed);
+    const future = all.filter((c) => c.last_reviewed && (!c.due_date || c.due_date > t));
+    due.sort((a, b) => (a.due_date < b.due_date ? -1 : a.due_date > b.due_date ? 1 : 0));
+    let q = [...due, ...shuffle(fresh).slice(0, NEW_PER_SESSION)];
+    if (!q.length) q = shuffle(future).slice(0, NEW_PER_SESSION); // caught up → light refresh
+    if (!q.length) q = shuffle(all);
+    return q;
+  }
+
   async function showReview() {
     const all = await getCards();
     if (!all.length) {
@@ -226,7 +248,7 @@ export async function renderFlashcards(container) {
       return;
     }
     if (!restoreSession(all)) {
-      queue = shuffle(all);
+      queue = buildQueue(all);
       idx = 0;
       session.reviewed = 0;
       persistSession();
@@ -235,12 +257,12 @@ export async function renderFlashcards(container) {
     renderCard();
   }
 
-  // Start a fresh shuffled pass (used by "Review again").
+  // Start a fresh due-first pass (used by "Review again").
   async function restartReview() {
     clearSession();
     const all = await getCards();
     if (!all.length) { renderNoCards(); return; }
-    queue = shuffle(all);
+    queue = buildQueue(all);
     idx = 0;
     session.reviewed = 0;
     persistSession();

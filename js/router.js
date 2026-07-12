@@ -19,6 +19,9 @@ import { renderConjugate } from './conjugate.js';
 import { renderWordChoice } from './wordchoice.js';
 import { renderCases } from './cases.js';
 import { renderConversation } from './conversation.js';
+import { renderPlurals } from './plurals.js';
+import { renderPastTense } from './pasttense.js';
+import { renderGrammar } from './grammar.js';
 
 // hash → render function. Each may return a cleanup function.
 const ROUTES = {
@@ -32,6 +35,9 @@ const ROUTES = {
   '#word-choice': renderWordChoice,
   '#cases': renderCases,
   '#conversation': renderConversation,
+  '#plurals': renderPlurals,
+  '#past-tense': renderPastTense,
+  '#grammar': renderGrammar,
 };
 
 // hash → { label, emoji } lookup for the fallback placeholder.

@@ -12,14 +12,17 @@
 // Practice sections. `built: false` sections render a "coming soon" placeholder
 // until their learning content is added in a later prompt.
 export const SECTIONS = [
-  { hash: '#conversation', label: 'Conversation',   emoji: '💬', desc: 'Everyday phrases by situation', built: true },
-  { hash: '#flashcards',  label: 'Flashcards',     emoji: '🃏', desc: 'Review your vocabulary',   built: false },
-  { hash: '#der-die-das', label: 'der / die / das', emoji: '🇩🇪', desc: 'Master the articles',      built: false },
-  { hash: '#fill-blank',  label: 'Fill the blank',  emoji: '✍️', desc: 'Complete the sentence',    built: false },
-  { hash: '#word-order',  label: 'Word order',      emoji: '🔀', desc: 'Arrange the words',        built: false },
-  { hash: '#conjugate',   label: 'Conjugate',       emoji: '🔤', desc: 'Get the verb endings',     built: false },
-  { hash: '#word-choice', label: 'Word choice',     emoji: '🎨', desc: 'Pick the right word',      built: false },
-  { hash: '#cases',       label: 'Cases',           emoji: '📦', desc: 'Nom · Akk · Dat · Gen',    built: false },
+  { hash: '#flashcards',  label: 'Flashcards',     emoji: '🃏', desc: 'Review your vocabulary',   built: true },
+  { hash: '#der-die-das', label: 'der / die / das', emoji: '🇩🇪', desc: 'Master the articles',      built: true },
+  { hash: '#plurals',     label: 'Plurals',         emoji: '👥', desc: 'Singular → plural',        built: true },
+  { hash: '#cases',       label: 'Cases',           emoji: '📦', desc: 'Nom · Akk · Dat · Gen',    built: true },
+  { hash: '#conjugate',   label: 'Conjugate',       emoji: '🔤', desc: 'Present-tense verbs',      built: true },
+  { hash: '#past-tense',  label: 'Past tense',      emoji: '⏪', desc: 'The Perfekt',              built: true },
+  { hash: '#fill-blank',  label: 'Fill the blank',  emoji: '✍️', desc: 'Complete the sentence',    built: true },
+  { hash: '#word-order',  label: 'Word order',      emoji: '🔀', desc: 'Arrange the words',        built: true },
+  { hash: '#word-choice', label: 'Word choice',     emoji: '🎨', desc: 'Pick the right word',      built: true },
+  { hash: '#conversation', label: 'Conversation',   emoji: '💬', desc: 'Everyday phrases',         built: true },
+  { hash: '#grammar',     label: 'Grammar',         emoji: '📖', desc: 'English explanations',     built: true },
 ];
 
 // Highlight the nav item matching the current route. The nav bars are gone, so
