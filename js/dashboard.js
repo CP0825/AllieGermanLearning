@@ -10,7 +10,7 @@ import {
   recomputeStreak, onChange,
 } from './db.js';
 import { levelProgress, levelTitle } from './levels.js';
-import { SECTIONS } from './nav.js';
+import { SECTIONS, GROUPS } from './nav.js';
 import { cutePrefs, randomLoveNote, heroGreeting } from './cute.js';
 
 // section id (hash without '#') → { emoji, label }
@@ -168,9 +168,9 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
         ${heatmap(allDaily)}
       </div>
 
-      <!-- Practice tiles -->
+      <!-- Practice tiles, grouped by category -->
       <h2 class="section-label">Practice</h2>
-      <div class="tile-grid">${tiles()}</div>
+      ${tileGroups()}
 
       <!-- Recent activity -->
       <div class="card">
@@ -339,17 +339,33 @@ function heatmap(allDaily) {
     </div>`;
 }
 
-function tiles() {
-  return SECTIONS.map(
-    (s) => `
+function tile(s) {
+  return `
     <a class="tile" href="${s.hash}">
       <div class="tile-emoji">${s.emoji}</div>
       <div class="tile-body">
-        <div class="tile-title">${s.label}</div>
-        <div class="tile-desc">${s.desc}</div>
+        <div class="tile-title">${escapeHtml(s.label)}</div>
+        <div class="tile-desc">${escapeHtml(s.desc)}</div>
       </div>
-    </a>`
-  ).join('');
+    </a>`;
+}
+
+// Practice tiles grouped under their category headings (see GROUPS in nav.js).
+// A group with no sections is skipped so the layout never shows an empty header.
+function tileGroups() {
+  return GROUPS.map((g) => {
+    const secs = SECTIONS.filter((s) => s.group === g.id);
+    if (!secs.length) return '';
+    return `
+      <div class="tile-group">
+        <div class="tile-group-head">
+          <span class="tg-emoji" aria-hidden="true">${g.emoji}</span>
+          <span class="tg-label">${escapeHtml(g.label)}</span>
+          ${g.desc ? `<span class="tg-desc muted">${escapeHtml(g.desc)}</span>` : ''}
+        </div>
+        <div class="tile-grid">${secs.map(tile).join('')}</div>
+      </div>`;
+  }).join('');
 }
 
 function feed(activity) {

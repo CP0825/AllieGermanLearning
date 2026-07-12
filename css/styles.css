@@ -464,6 +464,31 @@ code {
   right: 12px;
 }
 
+/* Tile groups — a labelled category above each little grid of tiles. */
+.tile-group {
+  margin-bottom: var(--sp-4);
+}
+.tile-group .tile-grid {
+  margin-bottom: 0;
+}
+.tile-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin: 0 0 var(--sp-2);
+  flex-wrap: wrap;
+}
+.tg-emoji {
+  font-size: 1.05rem;
+}
+.tg-label {
+  font-weight: 700;
+  font-size: 0.98rem;
+}
+.tg-desc {
+  font-size: 0.82rem;
+}
+
 /* ---- Settings ------------------------------------------------------------ */
 .field {
   display: block;
@@ -1131,11 +1156,21 @@ body.has-session-bar {
 }
 .cs-sentence,
 .wc-sentence,
-.fb-cue {
+.fb-cue,
+.dr-cue {
   text-align: center;
   color: var(--muted);
   font-size: 1rem;
   margin-bottom: var(--sp-2);
+}
+/* Grammar-drill English cue sits smaller above the German sentence. */
+.dr-cue {
+  font-size: 0.9rem;
+}
+.dr-cue + .wc-sentence {
+  color: var(--ink);
+  font-size: 1.2rem;
+  line-height: 1.6;
 }
 .fb-sentence {
   text-align: center;

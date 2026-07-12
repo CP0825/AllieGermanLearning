@@ -23,6 +23,10 @@ import { renderPlurals } from './plurals.js';
 import { renderPastTense } from './pasttense.js';
 import { renderTranslate } from './translate.js';
 import { renderGrammar } from './grammar.js';
+import { renderAdjectiveEndings } from './adjectiveendings.js';
+import { renderNegation } from './negation.js';
+import { renderPossessives } from './possessives.js';
+import { renderPraeteritum } from './praeteritum.js';
 
 // hash → render function. Each may return a cleanup function.
 const ROUTES = {
@@ -39,6 +43,10 @@ const ROUTES = {
   '#plurals': renderPlurals,
   '#past-tense': renderPastTense,
   '#translate': renderTranslate,
+  '#adjective-endings': renderAdjectiveEndings,
+  '#negation': renderNegation,
+  '#possessives': renderPossessives,
+  '#praeteritum': renderPraeteritum,
   '#grammar': renderGrammar,
 };
 

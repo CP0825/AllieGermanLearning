@@ -7,6 +7,12 @@ import { CASES } from './js/data/cases.js';
 import { VERBS, PRONOUNS } from './js/data/verbs.js';
 import { STARTER_CARDS } from './js/data/starterCards.js';
 import { CONVERSATION, CONVERSATION_SITUATIONS } from './js/data/conversation.js';
+import { TRANSLATIONS } from './js/data/translations.js';
+import { SENTENCE_TRANSLATIONS } from './js/data/sentenceTranslations.js';
+import { ADJECTIVE_ENDINGS } from './js/data/adjectiveEndings.js';
+import { NEGATION } from './js/data/negation.js';
+import { POSSESSIVES } from './js/data/possessives.js';
+import { PRAETERITUM } from './js/data/praeteritum.js';
 
 let errors = 0;
 const fail = (m) => { console.error('  ✗ ' + m); errors++; };
@@ -82,6 +88,39 @@ const cvd = dupes(CONVERSATION.map((c) => c.id)); if (cvd.length) fail(`conversa
 const sitCoverage = CONVERSATION_SITUATIONS.filter((s) => !CONVERSATION.some((c) => c.situation === s));
 if (sitCoverage.length) fail(`conversation situations with no items: ${sitCoverage.join(', ')}`);
 
+// ---- translate (production items) ----
+const fold = (s) => String(s).trim().toLowerCase().replace(/\s+/g, ' ')
+  .replace(/[.!?,;:„“"'»«]/g, '')
+  .replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+
+SENTENCE_TRANSLATIONS.forEach((t, i) => {
+  if (!t.id) fail(`sentenceTranslation[${i}] missing id`);
+  if (!t.en) fail(`sentenceTranslation ${t.id} missing en`);
+  if (!t.de) fail(`sentenceTranslation ${t.id} missing de`);
+  if (/\{blank\}/.test(t.de)) fail(`sentenceTranslation ${t.id} still has {blank} in de`);
+});
+const stid = dupes(SENTENCE_TRANSLATIONS.map((t) => t.id));
+if (stid.length) fail(`sentenceTranslation duplicate ids: ${stid.slice(0, 10).join(', ')}`);
+const stde = dupes(SENTENCE_TRANSLATIONS.map((t) => fold(t.de)));
+if (stde.length) fail(`sentenceTranslation duplicate de: ${stde.slice(0, 5).join(' | ')}`);
+// Generated items must not duplicate a curated answer.
+const curated = new Set(TRANSLATIONS.map((t) => fold(t.de)));
+const clash = SENTENCE_TRANSLATIONS.filter((t) => curated.has(fold(t.de))).map((t) => t.id);
+if (clash.length) fail(`sentenceTranslation collides with curated: ${clash.slice(0, 5).join(', ')}`);
+
+// ---- grammar drills (4 options, answer among them, one blank) ----
+const drills = { 'adjective-endings': ADJECTIVE_ENDINGS, negation: NEGATION, possessives: POSSESSIVES, praeteritum: PRAETERITUM };
+for (const [name, items] of Object.entries(drills)) {
+  if (items.length < 20) fail(`drill ${name} has ${items.length} items (< 20)`);
+  items.forEach((it, i) => {
+    if (countBlank(it.text) !== 1) fail(`${name}[${i}] needs exactly one {blank}`);
+    if (!Array.isArray(it.options) || it.options.length !== 4) fail(`${name}[${i}] "${it.text}" needs 4 options`);
+    if (!it.options.includes(it.answer)) fail(`${name}[${i}] "${it.text}" answer "${it.answer}" not in options`);
+    if (new Set(it.options).size !== it.options.length) fail(`${name}[${i}] "${it.text}" duplicate options`);
+    if (!it.translation) fail(`${name}[${i}] "${it.text}" missing translation`);
+  });
+}
+
 // ---- summary ----
 console.log('\nCounts:');
 console.log(`  VOCAB          ${VOCAB.length}  (nouns ${NOUNS.length})`);
@@ -91,5 +130,7 @@ console.log(`  CASES          ${CASES.length}`);
 console.log(`  VERBS          ${VERBS.length}`);
 console.log(`  STARTER_CARDS  ${STARTER_CARDS.length}`);
 console.log(`  CONVERSATION   ${CONVERSATION.length}  (situations ${CONVERSATION_SITUATIONS.length})`);
+console.log(`  TRANSLATE      ${TRANSLATIONS.length + SENTENCE_TRANSLATIONS.length}  (curated ${TRANSLATIONS.length} + generated ${SENTENCE_TRANSLATIONS.length})`);
+console.log(`  DRILLS         adj ${ADJECTIVE_ENDINGS.length} · neg ${NEGATION.length} · poss ${POSSESSIVES.length} · prät ${PRAETERITUM.length}`);
 console.log(errors ? `\n❌ ${errors} problem(s) found.` : '\n✅ All structural checks passed.');
 process.exit(errors ? 1 : 0);

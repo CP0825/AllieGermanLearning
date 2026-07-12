@@ -277,6 +277,28 @@ export const EXPLAIN_REF = {
       <i><b>meine</b> Mutter</i> (f), <i><b>mein</b> Kind</i> (n), <i><b>meine</b> Eltern</i> (pl).
       In the accusative the masculine adds -en: <i>Ich liebe <b>meinen</b> Vater.</i></p>`,
   },
+  praeteritum: {
+    title: 'Präteritum & Konjunktiv II',
+    emoji: '📜',
+    html: `
+      <p>The <b>Präteritum</b> is the <b>simple past</b> (one word). In speech Germans mostly use the
+      Perfekt for the past, <b>but</b> a handful of everyday verbs are almost always said in the
+      Präteritum — learn these:</p>
+      <ul>
+        <li><b>sein</b> → ich/er <b>war</b>, wir/sie <b>waren</b>, du <b>warst</b></li>
+        <li><b>haben</b> → ich/er <b>hatte</b>, wir/sie <b>hatten</b>, du <b>hattest</b></li>
+        <li><b>Modals</b> → <i>konnte, musste, wollte, durfte, sollte</i> (ich and er are identical)</li>
+      </ul>
+      <p>Strong verbs change their stem vowel: <i>gehen → ging, kommen → kam, geben → gab,
+      sehen → sah, fahren → fuhr</i>. (Regular verbs add <i>-te</i>: machen → machte.)</p>
+      <p>The <b>Konjunktiv II</b> is the polite / hypothetical "would, could, would like". You'll use
+      it constantly to be polite:</p>
+      <ul>
+        <li><i><b>Ich möchte</b> …</i> — I would like … (ordering, wanting)</li>
+        <li><i><b>Könnte</b> ich …?</i> — Could I …? · <i><b>Würdest</b> du …?</i> — Would you …?</li>
+        <li><i><b>Ich hätte</b> gern …</i> — I'd like … · <i>Das <b>wäre</b> schön.</i> — That would be nice.</li>
+      </ul>`,
+  },
   numbers: {
     title: 'Numbers 0–100',
     emoji: '🔢',
@@ -300,6 +322,7 @@ export const GRAMMAR_ORDER = [
   'adjective-endings',
   'conjugate',
   'past-tense',
+  'praeteritum',
   'negation',
   'possessives',
   'word-order',
@@ -311,9 +334,11 @@ export function explainTopic(key) {
   return EXPLAIN[key] || EXPLAIN_REF[key] || null;
 }
 
-// Collapsible "How it works" panel shown at the top of an exercise.
+// Collapsible "How it works" panel shown at the top of an exercise. Falls back
+// to the reference topics so the grammar drills (adjective endings, negation,
+// possessives…) show their rule panel too.
 export function explainPanel(key, { open = false } = {}) {
-  const t = EXPLAIN[key];
+  const t = explainTopic(key);
   if (!t) return '';
   return `
     <details class="ex-explain"${open ? ' open' : ''}>
