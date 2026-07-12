@@ -11,17 +11,11 @@ import {
 } from './db.js';
 import { levelProgress, levelTitle } from './levels.js';
 import { SECTIONS } from './nav.js';
+import { cutePrefs, randomLoveNote, heroGreeting } from './cute.js';
 
 // section id (hash without '#') → { emoji, label }
 const SEC = {};
 SECTIONS.forEach((s) => { SEC[s.hash.slice(1)] = { emoji: s.emoji, label: s.label }; });
-
-const SUBTITLES = [
-  'Bereit für ein bisschen Deutsch heute? 💕',
-  'Kleine Schritte, große Fortschritte. ✨',
-  'Schön, dass du wieder da bist! 🌸',
-  'Jede Karte zählt — du schaffst das! 💪',
-];
 
 export async function renderDashboard(el) {
   let t = null; // debounce timer for background refreshes
@@ -74,7 +68,9 @@ function heatClass(ex) {
 
 function template({ profile, cards, allDaily, todayStats, activity }) {
   const name = escapeHtml(profile.display_name || 'Allie');
-  const sub = SUBTITLES[Math.floor(Math.random() * SUBTITLES.length)];
+  const sub = heroGreeting();
+  const cute = cutePrefs();
+  const note = randomLoveNote();
 
   // Level + XP
   const lvl = levelProgress(profile.xp || 0);
@@ -113,6 +109,16 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
           </div>
         </div>
       </header>
+
+      <!-- Love note (from Allie's person 💗) -->
+      ${cute.notes ? `
+      <div class="love-note-wrap">
+        <div class="love-note">
+          <span class="love-note-pin" aria-hidden="true">📌</span>
+          <div class="love-note-de">${escapeHtml(note.de)}</div>
+          <div class="love-note-en">${escapeHtml(note.en)}</div>
+        </div>
+      </div>` : ''}
 
       <!-- Level + XP -->
       <div class="card level-card">
@@ -176,6 +182,10 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
       <div class="home-settings">
         <a class="btn" href="#settings">⚙️ Settings</a>
       </div>
+
+      ${cute.notes ? `
+      <p class="love-footer">Für Allie gemacht, mit ganz viel Liebe
+        <span class="brand-heart" aria-hidden="true">💗</span></p>` : ''}
     </section>`;
 }
 

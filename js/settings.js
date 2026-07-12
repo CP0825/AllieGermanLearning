@@ -17,6 +17,7 @@ import {
   onChange,
   today,
 } from './db.js';
+import { cutePrefs, setCutePref, initHearts } from './cute.js';
 
 export async function renderSettings(el) {
   const [profile, categories] = await Promise.all([getProfile(), getCategories()]);
@@ -66,6 +67,8 @@ function template(profile, categories) {
         <p id="set-status" class="save-status" hidden>Saved ✓</p>
       </div>
 
+      ${cutenessCard()}
+
       <div class="card">
         <h2 class="section-label">Categories</h2>
         <div id="cat-list" class="cat-list">${renderCats(categories)}</div>
@@ -87,6 +90,35 @@ function template(profile, categories) {
         <p id="backup-status" class="save-status" hidden></p>
       </div>
     </section>`;
+}
+
+function cutenessCard() {
+  const p = cutePrefs();
+  const opt = (v, label) => `<option value="${v}"${p.amount === v ? ' selected' : ''}>${label}</option>`;
+  return `
+    <div class="card">
+      <h2 class="section-label">Cuteness 💗</h2>
+      <div class="field field-row">
+        <span class="field-label">Floating hearts</span>
+        <label class="switch">
+          <input id="set-hearts" type="checkbox" ${p.hearts ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </div>
+      <label class="field" for="set-amount">
+        <span class="field-label">How many hearts</span>
+        <select id="set-amount" class="input">
+          ${opt('subtle', 'A few')}${opt('sweet', 'Sweet')}${opt('lots', 'Lots')}
+        </select>
+      </label>
+      <div class="field field-row">
+        <span class="field-label">Love notes on the home screen</span>
+        <label class="switch">
+          <input id="set-notes" type="checkbox" ${p.notes ? 'checked' : ''} />
+          <span class="slider"></span>
+        </label>
+      </div>
+    </div>`;
 }
 
 function wire(el) {
@@ -116,6 +148,14 @@ function wire(el) {
     updateProfile({ sound_enabled: sound.checked });
     flash();
   });
+
+  // Cuteness (localStorage prefs; no DB columns)
+  const hearts = el.querySelector('#set-hearts');
+  const amount = el.querySelector('#set-amount');
+  const notes = el.querySelector('#set-notes');
+  hearts.addEventListener('change', () => { setCutePref('hearts', hearts.checked); initHearts(); flash(); });
+  amount.addEventListener('change', () => { setCutePref('amount', amount.value); initHearts(); flash(); });
+  notes.addEventListener('change', () => { setCutePref('notes', notes.checked); flash(); });
 
   // Category manager
   const catForm = el.querySelector('#cat-form');
