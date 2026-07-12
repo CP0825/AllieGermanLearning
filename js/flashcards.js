@@ -9,7 +9,8 @@
 //     (Article / der-die-das drilling lives in the dedicated #der-die-das view.)
 //   • Manage: add / edit / delete cards (german, english, article, emoji,
 //     category, example) with an emoji category picker.
-//   • Seeds STARTER_CARDS the first time the cards table is empty.
+//   • Seeds STARTER_CARDS on first load and tops up missing cards after any
+//     SEED_VERSION bump (additive, dedup by german word).
 // ---------------------------------------------------------------------------
 
 import {
@@ -69,17 +70,27 @@ export function schedule(card, quality) {
   };
 }
 
-// One-time seed of the starter deck (+ base categories) when empty.
+// Bump this whenever STARTER_CARDS grows so existing users get the new cards.
+// (The old all-or-nothing `ag:seeded` flag froze early users at their first
+//  seed — deploying more starter cards never reached them. This version key +
+//  additive backfill fixes that: on each version bump we add any starter card
+//  the deck is missing, matched by german word so nothing is duplicated.)
+const SEED_VERSION = '2';
+
+// Seed / top-up the starter deck (+ base categories). Runs the first time and
+// again after any SEED_VERSION bump, adding only starter cards not already
+// present (dedup by lower-cased german word).
 async function maybeSeed() {
-  if (localStorage.getItem('ag:seeded')) return;
-  const cards = await getCards();
-  if (cards.length) {
-    localStorage.setItem('ag:seeded', '1');
-    return;
-  }
+  if (localStorage.getItem('ag:seedVersion') === SEED_VERSION) return;
+
   const cats = await ensureBaseCategories();
   const byName = Object.fromEntries(cats.map((c) => [c.name, c.id]));
+
+  const existing = await getCards();
+  const have = new Set(existing.map((c) => (c.german || '').trim().toLowerCase()));
+
   for (const sc of STARTER_CARDS) {
+    if (have.has(sc.german.trim().toLowerCase())) continue;
     const catName = SLUG_TO_NAME[sc.category];
     await addCard({
       german: sc.german,
@@ -89,8 +100,11 @@ async function maybeSeed() {
       example: sc.example,
       category_id: catName ? byName[catName] || null : null,
     });
+    have.add(sc.german.trim().toLowerCase());
   }
-  localStorage.setItem('ag:seeded', '1');
+
+  localStorage.setItem('ag:seedVersion', SEED_VERSION);
+  localStorage.setItem('ag:seeded', '1'); // keep legacy flag set for older code paths
 }
 
 async function ensureBaseCategories() {
