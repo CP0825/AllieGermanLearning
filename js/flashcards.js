@@ -169,15 +169,65 @@ export async function renderFlashcards(container) {
   let idx = 0;
   let flipped = false;
 
+  // Persist where you are in the deck so leaving (or switching to Manage) and
+  // coming back RESUMES instead of resetting the counter to 1. We store the card
+  // order + current index + reviewed count; on return we rebuild the queue from
+  // the saved order and drop in front any brand-new cards not yet seen.
+  const SESSION_KEY = 'ag:fcSession';
+
+  function persistSession() {
+    try {
+      localStorage.setItem(SESSION_KEY, JSON.stringify({
+        ids: queue.map((c) => c.id), idx, reviewed: session.reviewed,
+      }));
+    } catch { /* ignore quota */ }
+  }
+  function clearSession() {
+    try { localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+  }
+  // Rebuild queue/idx/reviewed from a saved session. Returns false if none valid.
+  function restoreSession(all) {
+    let saved = null;
+    try { saved = JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { /* ignore */ }
+    if (!saved || !Array.isArray(saved.ids) || !saved.ids.length) return false;
+    const byId = new Map(all.map((c) => [c.id, c]));
+    const restored = saved.ids.map((id) => byId.get(id)).filter(Boolean);
+    // Append any cards not in the saved order (newly added / freshly seeded).
+    const inQueue = new Set(saved.ids);
+    for (const c of all) if (!inQueue.has(c.id)) restored.push(c);
+    if (!restored.length) return false;
+    queue = restored;
+    idx = Math.min(Math.max(saved.idx || 0, 0), queue.length - 1);
+    session.reviewed = saved.reviewed || 0;
+    return true;
+  }
+
   async function showReview() {
-    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
     const all = await getCards();
     if (!all.length) {
       renderNoCards();
       return;
     }
+    if (!restoreSession(all)) {
+      queue = shuffle(all);
+      idx = 0;
+      session.reviewed = 0;
+      persistSession();
+    }
+    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
+    renderCard();
+  }
+
+  // Start a fresh shuffled pass (used by "Review again").
+  async function restartReview() {
+    clearSession();
+    const all = await getCards();
+    if (!all.length) { renderNoCards(); return; }
     queue = shuffle(all);
     idx = 0;
+    session.reviewed = 0;
+    persistSession();
+    scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
     renderCard();
   }
 
@@ -205,7 +255,7 @@ export async function renderFlashcards(container) {
           <button class="btn" id="fc-tomanage">Manage cards</button>
         </div>
       </div>`;
-    content.querySelector('#fc-again').addEventListener('click', showReview);
+    content.querySelector('#fc-again').addEventListener('click', restartReview);
     content.querySelector('#fc-tomanage').addEventListener('click', () => setMode('manage'));
   }
 
@@ -265,13 +315,13 @@ export async function renderFlashcards(container) {
     flashcard.classList.toggle('flipped', flipped);
   }
 
-  // A rating logs the review, updates the SM-2 due date, and advances.
-  // The rating is saved to the card immediately (interval/due_date), so progress
-  // toward "mastered" persists even though the on-screen position resets to 1/N
-  // the next time you open Review (the queue is reshuffled each session).
+  // A rating logs the review, updates the SM-2 due date, and advances. Position
+  // is persisted after every rating, so leaving mid-deck resumes where you were.
   function rate(quality) {
     const card = queue[idx];
-    updateCard(card.id, schedule(card, quality));
+    // Persist the SM-2 update AND the last rating (powers the progress donut).
+    updateCard(card.id, { ...schedule(card, quality), last_quality: quality });
+    card.last_quality = quality; // keep the in-memory queue copy in sync
     recordAttempt('flashcards', quality >= 3, XP_BY_Q[quality] ?? 6, card.german);
     session.reviewed += 1;
     scoreEl.textContent = `⭐ ${session.reviewed} reviewed`;
@@ -282,14 +332,20 @@ export async function renderFlashcards(container) {
       queue.splice(insertAt, 0, card);
     }
     idx += 1;
-    if (idx >= queue.length) renderDeckDone();
-    else renderCard();
+    if (idx >= queue.length) {
+      clearSession(); // finished the pass — next entry starts fresh
+      renderDeckDone();
+    } else {
+      persistSession();
+      renderCard();
+    }
   }
 
   // Step back to the previous card (without un-counting anything already rated).
   function goPrev() {
     if (idx === 0) return;
     idx -= 1;
+    persistSession();
     renderCard();
   }
 

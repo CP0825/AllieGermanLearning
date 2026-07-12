@@ -1460,6 +1460,51 @@ body.has-session-bar {
 .stat.mini { padding: var(--sp-3) var(--sp-2); }
 .stat-icon.gold { filter: drop-shadow(0 2px 4px rgba(245, 184, 65, 0.45)); }
 
+/* Flashcard progress donut */
+.fc-progress-chart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.donut { flex: none; }
+.donut-total {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.7rem;
+  fill: var(--ink);
+}
+.donut-cap {
+  font-size: 0.68rem;
+  fill: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.fc-legend {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  flex: 1;
+  min-width: 180px;
+}
+.fc-leg-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.92rem;
+}
+.fc-leg-dot { width: 14px; height: 14px; border-radius: 4px; flex: none; }
+.fc-leg-label { font-weight: 600; flex: 1; }
+.fc-leg-val {
+  color: var(--muted);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Accuracy bars */
 .acc-list { display: flex; flex-direction: column; gap: 10px; }
 .acc-row {

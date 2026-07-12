@@ -147,6 +147,9 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
         ${statTile('⚡', weekEx, 'this week')}
       </div>
 
+      <!-- Flashcard progress donut -->
+      ${flashcardProgress(cards)}
+
       <!-- Accuracy per section -->
       ${accuracyBlock(acc)}
 
@@ -174,6 +177,86 @@ function template({ profile, cards, allDaily, todayStats, activity }) {
         <a class="btn" href="#settings">⚙️ Settings</a>
       </div>
     </section>`;
+}
+
+// ---- Flashcard progress donut ---------------------------------------------
+// Every card falls in exactly one bucket, in this fixed order (grey → the three
+// rating colours, matching the Again / Good / Easy buttons in the review view).
+const FC_BUCKETS = [
+  { key: 'new',   label: 'Not yet done', color: '#B9AEB6' },
+  { key: 'again', label: 'Again',        color: '#E5484D' },
+  { key: 'good',  label: 'Good',         color: '#3BA776' },
+  { key: 'easy',  label: 'Easy',         color: '#3E78C9' },
+];
+
+function cardBucket(c) {
+  if (!c.last_reviewed) return 'new';
+  const q = c.last_quality;
+  if (q === 1) return 'again';
+  if (q === 5) return 'easy';
+  if (q === 4) return 'good';
+  // Reviewed before per-card rating was tracked → infer from the SM-2 state.
+  if ((c.repetitions || 0) === 0 || (c.interval || 0) <= 1) return 'again';
+  return 'good';
+}
+
+function flashcardProgress(cards) {
+  const total = cards.length;
+  if (!total) return '';
+  const counts = { new: 0, again: 0, good: 0, easy: 0 };
+  cards.forEach((c) => { counts[cardBucket(c)]++; });
+  const segs = FC_BUCKETS.map((b) => ({ ...b, value: counts[b.key] }));
+  return `
+    <div class="card">
+      <h2 class="section-label" style="margin-top:0">Flashcard progress</h2>
+      <div class="fc-progress-chart">
+        ${donut(segs, total)}
+        <ul class="fc-legend">
+          ${segs
+            .map((s) => {
+              const pct = Math.round((s.value / total) * 100);
+              return `
+                <li class="fc-leg-item">
+                  <span class="fc-leg-dot" style="background:${s.color}"></span>
+                  <span class="fc-leg-label">${s.label}</span>
+                  <span class="fc-leg-val">${s.value} · ${pct}%</span>
+                </li>`;
+            })
+            .join('')}
+        </ul>
+      </div>
+    </div>`;
+}
+
+// Donut: one stroked arc per non-empty bucket, 2px gaps between slices, total in
+// the middle. All slices are also named in the legend, so identity never relies
+// on colour alone.
+function donut(segs, total) {
+  const r = 52;
+  const C = 2 * Math.PI * r;
+  let acc = 0;
+  const arcs = segs
+    .filter((s) => s.value > 0)
+    .map((s) => {
+      const len = (s.value / total) * C;
+      const gap = s.value < total ? 2 : 0; // full-circle single bucket → no gap
+      const shown = Math.max(len - gap, 0.01);
+      const dash = `${shown} ${C - shown}`;
+      const off = -acc;
+      acc += len;
+      return `<circle cx="70" cy="70" r="${r}" fill="none" stroke="${s.color}"
+        stroke-width="20" stroke-dasharray="${dash}" stroke-dashoffset="${off}"
+        transform="rotate(-90 70 70)"><title>${escapeHtml(s.label)}: ${s.value}</title></circle>`;
+    })
+    .join('');
+  return `
+    <svg class="donut" viewBox="0 0 140 140" width="140" height="140" role="img"
+         aria-label="Flashcard progress by rating">
+      <circle cx="70" cy="70" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="20" />
+      ${arcs}
+      <text class="donut-total" x="70" y="67" text-anchor="middle">${total}</text>
+      <text class="donut-cap" x="70" y="85" text-anchor="middle">cards</text>
+    </svg>`;
 }
 
 function statTile(icon, value, label, tone = '') {

@@ -44,8 +44,12 @@ create table if not exists cards (
   repetitions   int default 0,
   due_date      date default current_date,
   last_reviewed timestamptz,
+  last_quality  int,                 -- last self-rating: 1 Again · 4 Good · 5 Easy
   created_at    timestamptz default now()
 );
+
+-- If the table predates last_quality (added later), add it in place.
+alter table cards add column if not exists last_quality int;
 
 create table if not exists activity_log (
   id         uuid primary key default gen_random_uuid(),

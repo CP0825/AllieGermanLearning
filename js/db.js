@@ -321,6 +321,7 @@ export async function addCard(card) {
     repetitions: 0,
     due_date: today(),
     last_reviewed: null,
+    last_quality: null,
     created_at: nowISO(),
   };
   const list = cacheGet('cards') || [];
